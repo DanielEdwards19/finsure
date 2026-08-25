@@ -1,6 +1,10 @@
 "use client";
 
 import { findThread } from "@/lib/data/threads";
+import {
+  documentPath,
+  findDocumentByAttachment,
+} from "@/lib/domain/client-files";
 import { reviewForApplication } from "@/lib/domain/compliance";
 import type { CanvasView } from "@/lib/domain/answers";
 import type { DataScope } from "@/lib/domain/identity";
@@ -87,7 +91,7 @@ export function ThreadView({
                 {message.attachments.length > 0 && (
                   <span className="flex flex-wrap gap-2">
                     {message.attachments.map((attachment) => (
-                      <Pill key={attachment}>{attachment}</Pill>
+                      <Attachment key={attachment} name={attachment} />
                     ))}
                   </span>
                 )}
@@ -118,5 +122,32 @@ export function ThreadView({
         review. No compliance determination is made.
       </Caveat>
     </div>
+  );
+}
+
+/**
+ * An email attachment, linked to the stored document when the file register
+ * holds it. An attachment named in correspondence is not always a file the
+ * business holds, so an unresolved name stays plain text rather than a dead
+ * link — and a restricted document is named but never opened.
+ */
+function Attachment({ name }: { name: string }) {
+  const document = findDocumentByAttachment(name);
+
+  if (document?.restricted) {
+    return <Pill tone="warn">{name} — preview restricted</Pill>;
+  }
+
+  if (!document) return <Pill>{name}</Pill>;
+
+  return (
+    <a
+      href={documentPath(document)}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="rounded-pill bg-white/6 px-2.5 py-1.5 text-meta font-medium text-primary no-underline shadow-[inset_0_0_0_1px_var(--color-hairline)] hover:bg-white/12"
+    >
+      {name}
+    </a>
   );
 }

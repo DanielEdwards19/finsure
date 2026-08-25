@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { ask } from "./ask";
+import { ask, suggestions } from "./ask";
+import { reviewForApplication } from "./compliance";
 import { scopeFor } from "./identity";
 import { userId } from "./types";
 
@@ -100,5 +101,119 @@ describe("ask", () => {
         question,
       ).toBeGreaterThan(0);
     }
+  });
+  /*
+   * Every offered prompt must reach the answer it promises. These are the only
+   * questions a reader is invited to click, so a prompt that lands on an
+   * unrelated aggregate is a broken feature rather than a poor match.
+   */
+  describe("offered prompts", () => {
+    it("answers each network prompt with the network", () => {
+      const expected: Record<string, string> = {
+        "Summarise the compliance review across the network": "compliance",
+        "Which branches need attention right now?": "networkReport",
+        "Generate a network compliance report across every branch":
+          "networkReport",
+      };
+
+      for (const question of suggestions(organisation, { kind: "map" })) {
+        expect(Object.keys(expected), question).toContain(question);
+        expect(ask(organisation, question).view?.kind, question).toBe(
+          expected[question],
+        );
+      }
+    });
+
+    it("answers each file prompt about the file on the canvas", () => {
+      const focus = organisation.applications.find(
+        (a) => reviewForApplication(organisation, a.id) != null,
+      )!;
+
+      for (const question of suggestions(organisation, {
+        kind: "application",
+        id: focus.id,
+      })) {
+        const answer = ask(organisation, question, { focus });
+
+        expect(answer.intro, question).toContain(focus.customer);
+        expect(["application", "thread"], question).toContain(
+          answer.view?.kind,
+        );
+      }
+    });
+
+    it("offers file prompts for a broker, who has no branch network", () => {
+      expect(suggestions(broker)).toContain(
+        "What compliance findings are on this file?",
+      );
+    });
+  });
+
+  /*
+   * Short lender names sit inside ordinary words: "ING" is in "findings" and
+   * "waiting", and "right" is in "Wright". Matching on any substring answered
+   * these questions with an unrelated lender or household, so the boundaries are
+   * asserted directly.
+   */
+  describe("word boundaries", () => {
+    it("does not read a lender out of an unrelated word", () => {
+      const focus = organisation.applications.find(
+        (a) => reviewForApplication(organisation, a.id) != null,
+      )!;
+
+      for (const question of [
+        "What compliance findings are on this file?",
+        "What information are we still waiting on?",
+      ]) {
+        const answer = ask(organisation, question, { focus });
+        expect(answer.intro, question).not.toContain("are with ING");
+      }
+    });
+
+    it("still answers a question that genuinely names a lender", () => {
+      expect(
+        ask(organisation, "How many applications are with ING?").intro,
+      ).toContain("ING");
+    });
+
+    it("does not read a client name out of an unrelated word", () => {
+      const answer = ask(
+        organisation,
+        "Which branches need attention right now?",
+      );
+      expect(answer.view?.kind).toBe("networkReport");
+      expect(answer.intro).toContain("require attention");
+    });
+
+    it("prefers a broker over a client sharing the surname", () => {
+      const answer = ask(organisation, "Show me Rachael Nguyen");
+      expect(answer.view?.kind).toBe("broker");
+      expect(answer.intro).toContain("Rachael Nguyen");
+    });
+
+    it("still resolves a partly typed name", () => {
+      expect(ask(organisation, "Thomp").intro).toContain("Thompson");
+    });
+  });
+
+  /*
+   * GUARDRAIL: a file with no analysed correspondence has no findings either
+   * way. The answer says so rather than returning an empty list, which would
+   * read as a file with nothing outstanding.
+   */
+  it("says when a file has no analysed correspondence", () => {
+    const unanalysed = organisation.applications.find(
+      (a) => reviewForApplication(organisation, a.id) == null,
+    )!;
+    const answer = ask(
+      organisation,
+      "What compliance findings are on this file?",
+      {
+        focus: unanalysed,
+      },
+    );
+
+    expect(answer.intro).toContain("no analysed correspondence");
+    expect(answer.outro).toContain("Information required");
   });
 });

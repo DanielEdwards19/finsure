@@ -51,7 +51,7 @@ export function ChatPanel({
         {empty && (
           <p className="m-0 px-0.5 py-1.5 text-[13px] leading-relaxed text-secondary">
             Ask anything about the client or the network. Answers are grounded
-            only in the record, and every figure states its source. The canvas
+            only in the record, with source citations you can open. The canvas
             on the left responds.
           </p>
         )}
@@ -75,7 +75,7 @@ export function ChatPanel({
       {empty && (
         <div className="flex-none px-[18px] pt-3 pb-1">
           <div className="mb-2.5 flex flex-col gap-1.5">
-            {suggestions(scope).map((question) => (
+            {suggestions(scope, chat.view).map((question) => (
               <button
                 key={question}
                 type="button"

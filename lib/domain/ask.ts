@@ -12,7 +12,7 @@
  * compliance wording means that file's findings, not a network summary.
  */
 
-import { documentsForReference } from "./client-files";
+import { recordDocumentsFor } from "./client-files";
 import { reviewForApplication } from "./compliance";
 import {
   applicationFindingsAnswer,
@@ -27,6 +27,7 @@ import {
   networkReportAnswer,
   stageAnswer,
   type Answer,
+  type CanvasView,
 } from "./answers";
 import {
   applicationTypesIn,
@@ -35,6 +36,7 @@ import {
   stagesIn,
 } from "./network";
 import type { DataScope } from "./identity";
+import type { Application } from "./types";
 
 /** Wording that scopes a question to the whole network rather than one record. */
 const NETWORK =
@@ -55,15 +57,97 @@ const DOCUMENTS =
 const CLIENT_FILE = /client file|customer file|the file for\b/;
 
 const REPORT = /report|snapshot|compil|summar|position|picture|update/;
+
+/**
+ * A request for the report itself, rather than any wording that merely reads as
+ * summarising. "Summarise the compliance review" asks for the review; "generate
+ * a network compliance report" asks for the report, and both contain compliance
+ * wording, so the noun is what separates them.
+ */
+const EXPLICIT_REPORT = /\breports?\b|\bsnapshot\b/;
+
+/** Asking what is not yet held, rather than what was found. */
+const OUTSTANDING =
+  /waiting on|still (need|waiting|outstanding)|outstanding|information required|what.*(do we|are we) (need|missing)/;
+
+/**
+ * Whether a question names a term, as a word rather than as a substring.
+ *
+ * Plain `includes` matched a lender inside an unrelated word: "ING" appears in
+ * "findings" and "waiting", so "What compliance findings are on this file?"
+ * answered with ING's loan book. Short lender names make this the rule rather
+ * than an edge case, so matching is anchored to word boundaries.
+ */
+const mentions = (text: string, term: string): boolean => {
+  const escaped = term.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(?<![a-z0-9])${escaped}(?![a-z0-9])`).test(text);
+};
 const COVERAGE =
   /lowest (evidence )?coverage|worst coverage|coverage.*(low|by branch|tracking)/;
 const ATTENTION =
   /need(s)? attention|requires attention|attention right now|which branch(es)?|at risk|flagged/;
 
-export function ask(scope: DataScope, question: string): Answer {
+/**
+ * Wording that points at whatever the canvas already has open rather than naming
+ * a record — "this file", "this client", "we", "still waiting on".
+ */
+const DEICTIC =
+  /\bthis (file|client|application|customer|one)\b|\bwe\b|\bour\b/;
+
+export interface AskContext {
+  /** The application the canvas currently has open, if any. */
+  readonly focus?: Application;
+}
+
+/**
+ * The application a canvas view is about, where it is about one. Views showing
+ * the network as a whole have no focused file, so a question pointing at "this
+ * file" from there is left unresolved rather than attached to an arbitrary
+ * record.
+ */
+export function focusedApplication(
+  scope: DataScope,
+  view: CanvasView,
+): Application | undefined {
+  const id =
+    view.kind === "application"
+      ? view.id
+      : view.kind === "thread" || view.kind === "document"
+        ? view.applicationId
+        : null;
+
+  return id ? scope.applications.find((a) => a.id === id) : undefined;
+}
+
+export function ask(
+  scope: DataScope,
+  question: string,
+  { focus }: AskContext = {},
+): Answer {
   const text = question.toLowerCase();
   const entities = resolveEntities(scope, question);
-  const customer = entities.customers[0];
+
+  /*
+   * A question can name a client, or point at the one already on the canvas.
+   * Resolving the open record means "What compliance findings are on this file?"
+   * answers about the file in front of the reader instead of reporting that no
+   * record matched — the phrase names a record, just not by name.
+   *
+   * A named client is only treated as the subject when it outranks any broker or
+   * branch the same words matched. Households and brokers share surnames, so
+   * "Rachael Nguyen" must reach the broker rather than a client called Nguyen.
+   */
+  const named = entities.customers[0];
+  const rivalScore = Math.max(
+    entities.brokers[0]?.score ?? 0,
+    entities.branches[0]?.score ?? 0,
+  );
+  const customer =
+    named && named.score >= rivalScore
+      ? named
+      : focus && DEICTIC.test(text)
+        ? { record: focus, score: 1 }
+        : undefined;
 
   // A named customer takes precedence: the question is about their file.
   if (customer) {
@@ -71,13 +155,7 @@ export function ask(scope: DataScope, question: string): Answer {
 
     if (DOCUMENTS.test(text) && !CLIENT_FILE.test(text)) {
       const review = reviewForApplication(scope, application.id);
-      const documents = review
-        ? documentsForReference(review.reference).filter(
-            (d) =>
-              d.source !== "Prototype logic" &&
-              d.source !== "Prototype package",
-          )
-        : [];
+      const documents = review ? recordDocumentsFor(review.reference) : [];
 
       if (documents.length) {
         const systems = new Set(documents.map((d) => d.source));
@@ -99,13 +177,43 @@ export function ask(scope: DataScope, question: string): Answer {
       }
     }
 
-    if (FINDINGS.test(text)) {
+    if (FINDINGS.test(text) || OUTSTANDING.test(text)) {
       const findings = applicationFindingsAnswer(scope, application);
       if (findings) return findings;
+
+      /*
+       * GUARDRAIL: no analysed correspondence is not the same as nothing
+       * outstanding. Saying so is the answer — reporting an empty list would
+       * read as a clear file, and falling through to a network aggregate would
+       * answer a question nobody asked.
+       */
+      return {
+        intro: `${application.customer} (${application.id}) has no analysed correspondence on file, so no findings have been recorded either way.`,
+        groups: [],
+        outro:
+          "Information required: the email archive for this file has not been analysed. Human assessment required.",
+        view: { kind: "application", id: application.id },
+      };
     }
 
     if (EMAIL.test(text)) return emailsAnswer(scope, application);
+
+    /*
+     * The question named a file, so it is answered about that file. Continuing
+     * to the network checks below would answer with an unrelated aggregate,
+     * which is how "What compliance findings are on this file?" came back with a
+     * lender's loan book.
+     */
+    return customerAnswer([application]);
   }
+
+  /*
+   * A report is asked for by name, so it is resolved before the compliance
+   * review: "generate a network compliance report" reads as both, and the
+   * report is the more specific request of the two.
+   */
+  if (NETWORK.test(text) && EXPLICIT_REPORT.test(text))
+    return networkReportAnswer(scope);
 
   // Network-level compliance review.
   if (COMPLIANCE.test(text) && NETWORK.test(text))
@@ -119,13 +227,13 @@ export function ask(scope: DataScope, question: string): Answer {
 
   // Aggregates over a named stage, lender or application type.
   for (const stage of stagesIn(scope)) {
-    if (text.includes(stage.toLowerCase())) return stageAnswer(scope, stage);
+    if (mentions(text, stage)) return stageAnswer(scope, stage);
   }
   for (const lender of lendersIn(scope)) {
-    if (text.includes(lender.toLowerCase())) return lenderAnswer(scope, lender);
+    if (mentions(text, lender)) return lenderAnswer(scope, lender);
   }
   for (const type of applicationTypesIn(scope)) {
-    if (text.includes(type.toLowerCase())) {
+    if (mentions(text, type)) {
       const applications = scope.applications.filter((a) => a.type === type);
       return {
         intro: `${applications.length} applications are of type "${type}".`,
@@ -146,17 +254,16 @@ export function ask(scope: DataScope, question: string): Answer {
     }
   }
 
-  // Whichever entity kind matched most strongly.
+  /*
+   * Whichever entity kind matched most strongly. A customer is not considered
+   * here: naming one is handled above and answers about that file directly.
+   */
   const best = Math.max(
-    customer?.score ?? 0,
     entities.brokers[0]?.score ?? 0,
     entities.branches[0]?.score ?? 0,
   );
 
   if (best > 0) {
-    if (customer && customer.score === best) {
-      return customerAnswer(entities.customers.map((m) => m.record));
-    }
     if (entities.brokers[0]?.score === best) {
       return brokerAnswer(scope, entities.brokers[0].record);
     }
@@ -192,19 +299,37 @@ function notFound(scope: DataScope, question: string): Answer {
 }
 
 /** Prompts offered on an empty conversation, adapted to the access level. */
-export function suggestions(scope: DataScope): readonly string[] {
-  if (scope.isBroker) {
-    return [
-      "Summarise my applications",
-      "Which of my applications need attention?",
-      "Show me the compliance review for my files",
-    ];
-  }
+/** Prompts offered while a client or their file is on the canvas. */
+const FILE_SUGGESTIONS: readonly string[] = [
+  "What compliance findings are on this file?",
+  "What was the last email sent to this client?",
+  "What information are we still waiting on?",
+];
 
-  return [
-    "Compile a network position report",
-    "Which branches need attention right now?",
-    "Summarise the compliance review across the network",
-    "Which branches have the lowest evidence coverage?",
-  ];
+/** Prompts offered while the network is on the canvas. */
+const NETWORK_SUGGESTIONS: readonly string[] = [
+  "Summarise the compliance review across the network",
+  "Which branches need attention right now?",
+  "Generate a network compliance report across every branch",
+];
+
+/**
+ * Prompts to offer, following whatever the canvas has open.
+ *
+ * The set is contextual because the canvas is the subject of the conversation:
+ * with a file open the useful questions are about that file, and a broker only
+ * ever has files, having no branch network to ask about.
+ */
+export function suggestions(
+  scope: DataScope,
+  view?: CanvasView,
+): readonly string[] {
+  const onFile =
+    view != null &&
+    (view.kind === "application" ||
+      view.kind === "thread" ||
+      view.kind === "document" ||
+      view.kind === "compliance");
+
+  return onFile || scope.isBroker ? FILE_SUGGESTIONS : NETWORK_SUGGESTIONS;
 }

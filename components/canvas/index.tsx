@@ -3,7 +3,8 @@
 import type { CanvasView } from "@/lib/domain/answers";
 import type { DataScope } from "@/lib/domain/identity";
 import { ApplicationView } from "./application-view";
-import { ComplianceView } from "./compliance-view";
+import { ComplianceView, FindingGroupView } from "./compliance-view";
+import { DocumentView } from "./document-view";
 import { BranchView, BrokerView, NetworkReportView } from "./network-views";
 import { ThreadView } from "./thread-view";
 
@@ -32,6 +33,19 @@ export function Canvas({
 
     case "compliance":
       return <ComplianceView scope={scope} onOpen={onOpen} />;
+
+    case "findingGroup":
+      return (
+        <FindingGroupView
+          scope={scope}
+          group={view.group}
+          value={view.value}
+          onOpen={onOpen}
+        />
+      );
+
+    case "document":
+      return <DocumentView id={view.id} />;
 
     case "branch": {
       const branch = scope.branches.find((b) => b.id === view.id);
@@ -95,6 +109,10 @@ export function canvasTitle(view: CanvasView): string {
       return "Network position";
     case "compliance":
       return "Evidence review";
+    case "findingGroup":
+      return "Findings";
+    case "document":
+      return "Document";
     case "branch":
       return "Branch";
     case "broker":

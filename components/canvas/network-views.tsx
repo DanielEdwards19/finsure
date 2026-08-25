@@ -1,6 +1,7 @@
 "use client";
 
 import { severityOfStatus } from "@/lib/data/network";
+import { severityResolverFor } from "@/lib/domain/compliance";
 import {
   applicationsForBranch,
   applicationsForBroker,
@@ -13,6 +14,7 @@ import type { CanvasView } from "@/lib/domain/answers";
 import type { DataScope } from "@/lib/domain/identity";
 import type { Application, Branch, Broker, Severity } from "@/lib/domain/types";
 import type { Tone } from "@/lib/design/tokens";
+import { LenderMark } from "../lender-mark";
 import { Card, CanvasTitle, Caveat, Field, Grid, Pill, Section } from "./ui";
 
 const TONE_OF: Record<Severity, Tone> = {
@@ -77,7 +79,8 @@ function ApplicationList({
               {application.status}
             </Pill>
           </span>
-          <span className="text-secondary-sm text-secondary">
+          <span className="flex items-center gap-2 text-secondary-sm text-secondary">
+            <LenderMark name={application.lender} size={18} />
             {application.type} · {money(application.amount)} ·{" "}
             {application.lender}
           </span>
@@ -189,9 +192,9 @@ export function BranchView({
   const rollup = branchRollup(scope).find((b) => b.branch.id === branch.id);
   const applications = applicationsForBranch(scope, branch.id);
   const brokers = brokersForBranch(scope, branch.id);
-  const attention = applications.filter(
-    (a) => severityOfStatus(a.status) === "attention",
-  );
+  // Same rule as the roll-up above and the marker on the map.
+  const severityOf = severityResolverFor(scope);
+  const attention = applications.filter((a) => severityOf(a) === "attention");
 
   return (
     <div className="flex w-full animate-rise flex-col gap-6">
@@ -283,9 +286,8 @@ export function BrokerView({
   onOpen: (view: CanvasView) => void;
 }) {
   const applications = applicationsForBroker(scope, broker.id);
-  const attention = applications.filter(
-    (a) => severityOfStatus(a.status) === "attention",
-  );
+  const severityOf = severityResolverFor(scope);
+  const attention = applications.filter((a) => severityOf(a) === "attention");
   const value = applications.reduce((total, a) => total + a.amount, 0);
 
   return (

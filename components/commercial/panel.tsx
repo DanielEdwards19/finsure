@@ -6,6 +6,9 @@ import {
   ANALYSIS_NOTICE,
   ANALYSIS_STEPS,
   DOC_PACK,
+  NOT_IN_DOCUMENTS,
+  PROTOTYPE_LABEL,
+  SUPPRESSION_RULE,
   findPackDocument,
 } from "@/lib/domain/commercial/document-pack";
 import { extractionRows } from "@/lib/domain/commercial/derive";
@@ -437,6 +440,9 @@ function DocumentIntake({ commercial }: { commercial: Commercial }) {
           Documents stay on the file. Extraction is indicative and requires your
           confirmation.
         </span>
+        <span className="text-[11px] leading-4 text-tertiary">
+          {PROTOTYPE_LABEL}.
+        </span>
       </div>
     );
   }
@@ -490,6 +496,38 @@ function ExtractionReview({ commercial }: { commercial: Commercial }) {
       {rows.map((row) => (
         <ExtractedRow key={row.key} row={row} commercial={commercial} />
       ))}
+
+      {/*
+        GUARDRAIL: what the documents did not cover has to be stated as plainly
+        as what they did. Listing only the extracted values would let a reader
+        infer that a topic absent from the documents is a topic that needs no
+        answer — the absence of a document is never proof of absence of a fact.
+      */}
+      <div className="flex flex-col gap-2 rounded-card bg-white/4 px-3.5 py-3">
+        <span className="text-secondary-sm font-medium">
+          What the documents did not cover
+        </span>
+        <span className="text-xs leading-[18px] text-secondary">
+          These remain outstanding regardless of what was read. The questions
+          ahead collect them.
+        </span>
+        {NOT_IN_DOCUMENTS.map((item) => (
+          <span
+            key={item}
+            className="flex items-start gap-2 text-xs leading-[18px] text-secondary"
+          >
+            <span
+              aria-hidden
+              className="bg-warn mt-[6px] block size-1.5 flex-none rounded-full"
+            />
+            {item}
+          </span>
+        ))}
+      </div>
+
+      <span className="text-[11.5px] leading-[17px] text-tertiary">
+        {SUPPRESSION_RULE}
+      </span>
 
       <div className="flex flex-wrap gap-2">
         <button

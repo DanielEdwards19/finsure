@@ -16,8 +16,9 @@ import { CONFIRMATIONS } from "@/lib/domain/commercial/flow";
 import { money } from "@/lib/format";
 import type { LenderResult } from "@/lib/domain/types";
 import type { Commercial } from "@/lib/use-commercial";
+import { LenderMark } from "../lender-mark";
 import { Card, Caveat, Pill } from "../canvas/ui";
-import { Check, RowButton, SectionHeader } from "./canvas";
+import { Check, RowButton, SectionHeader } from "./ui";
 
 /**
  * Sections 9 and 10 — the lender comparison and the broker's recommendation.
@@ -328,6 +329,7 @@ function ProductRow({
       }`}
     >
       <span className="flex flex-wrap items-center gap-2">
+        <LenderMark name={row.lender} size={26} />
         <span className="min-w-0 flex-1 flex-col">
           <span className="block text-[13.5px] font-medium">{row.lender}</span>
           <span className="block text-meta text-secondary">{row.product}</span>

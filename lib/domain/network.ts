@@ -8,8 +8,9 @@
  * independently of the wording.
  */
 
-import { rollUpSeverity, severityOfStatus } from "@/lib/data/network";
+import { rollUpSeverity } from "@/lib/data/network";
 import { normalise } from "@/lib/format";
+import { severityResolverFor } from "./compliance";
 import type { DataScope } from "./identity";
 import type {
   Application,
@@ -22,13 +23,19 @@ import type {
 } from "./types";
 
 /**
- * How an application's severity is decided. The default reads the recorded
- * status; the compliance-aware workspace supplies a resolver that also accounts
- * for open findings, so markers, tables and totals cannot disagree.
+ * How an application's severity is decided.
+ *
+ * The default is the compliance-aware rule, so markers, tables and totals all
+ * read the same findings and cannot disagree. It is a parameter only so that
+ * tests can substitute a rule and assert the roll-up arithmetic independently
+ * of the dataset.
+ *
+ * It deliberately does NOT default to the recorded pipeline status: a stage
+ * such as "Requires review" describes where a file sits in the process, and
+ * treating that as a compliance signal would report an adverse finding for a
+ * file whose correspondence was never analysed.
  */
 export type SeverityResolver = (application: Application) => Severity;
-
-const defaultSeverity: SeverityResolver = (a) => severityOfStatus(a.status);
 
 export interface AnalysisOptions {
   readonly severityOf?: SeverityResolver;
@@ -88,7 +95,7 @@ export interface BranchRollup {
 
 export function branchRollup(
   scope: DataScope,
-  { severityOf = defaultSeverity }: AnalysisOptions = {},
+  { severityOf = severityResolverFor(scope) }: AnalysisOptions = {},
 ): readonly BranchRollup[] {
   return scope.branches.map((branch) => {
     const applications = applicationsForBranch(scope, branch.id);
@@ -131,7 +138,7 @@ export interface NetworkTotals {
 
 export function networkTotals(
   scope: DataScope,
-  { severityOf = defaultSeverity }: AnalysisOptions = {},
+  { severityOf = severityResolverFor(scope) }: AnalysisOptions = {},
 ): NetworkTotals {
   const rollup = branchRollup(scope, { severityOf });
   const severities = scope.applications.map(severityOf);
@@ -166,7 +173,7 @@ export interface BrokerRollup {
 export function brokerRollup(
   scope: DataScope,
   id: BrokerId,
-  { severityOf = defaultSeverity }: AnalysisOptions = {},
+  { severityOf = severityResolverFor(scope) }: AnalysisOptions = {},
 ): BrokerRollup | null {
   const broker = brokerIn(scope, id);
   if (!broker) return null;
@@ -273,6 +280,21 @@ const EMPTY_RESOLUTION: ResolvedEntities = {
 };
 
 /**
+ * Whether a query token names a word in a record's name.
+ *
+ * A token has to line up with the start of a word rather than appear anywhere
+ * inside one. Matching on any substring made "which branches need attention
+ * right now" resolve to a customer named Wright, because "right" sits inside
+ * "wright" — so an unambiguous question about the network answered with one
+ * household's file.
+ *
+ * Leading-edge matching is kept so that a partly typed name still resolves:
+ * "thomp" finds Thompson, while "right" does not find Wright.
+ */
+const tokenNamesWord = (words: readonly string[], token: string): boolean =>
+  words.some((word) => word.startsWith(token));
+
+/**
  * Score a record name against the query. An exact match ranks highest, then a
  * name fully contained in the query, then partial token overlap.
  */
@@ -284,7 +306,8 @@ function scoreName(
   if (tokens.length === 0) return 0;
 
   const candidate = normalise(name);
-  const hits = tokens.filter((t) => candidate.includes(t)).length;
+  const words = candidate.split(" ").filter(Boolean);
+  const hits = tokens.filter((t) => tokenNamesWord(words, t)).length;
   if (hits === 0) return 0;
 
   if (candidate === query) return 100;

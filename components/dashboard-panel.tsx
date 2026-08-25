@@ -21,11 +21,14 @@ export function DashboardPanel({
   scope,
   onSwitchIdentity,
   onAsk,
+  onNewChat,
   onStartCommercial,
 }: {
   scope: DataScope;
   onSwitchIdentity: (id: UserId) => void;
-  onAsk: (question: string) => void;
+  onAsk: (question: string, title?: string) => void;
+  /** Open an empty conversation, so the reader chooses the first question. */
+  onNewChat: () => void;
   onStartCommercial: () => void;
 }) {
   const totals = useMemo(() => networkTotals(scope), [scope]);
@@ -106,7 +109,7 @@ export function DashboardPanel({
           title="Ask a question"
           sub="AI Agent can help"
           subClass="text-base"
-          onClick={() => onAsk("What should I look at first?")}
+          onClick={onNewChat}
         />
         <EntryCard
           title="Start commercial loan application"
@@ -117,7 +120,10 @@ export function DashboardPanel({
           title="Latest updates"
           sub={`${totals.applications} applications ${where} · ${totals.attention} requiring attention${coverage}.`}
           onClick={() =>
-            onAsk("What are the latest updates across the group this week?")
+            onAsk(
+              "What are the latest updates across the group this week?",
+              "Latest updates",
+            )
           }
         />
 

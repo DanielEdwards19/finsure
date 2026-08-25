@@ -15,7 +15,12 @@
  */
 
 import { money, plural, shortMoney } from "@/lib/format";
-import { networkCompliance, reviewForApplication, RULES } from "./compliance";
+import {
+  networkCompliance,
+  reviewForApplication,
+  RULES,
+  type GroupKind,
+} from "./compliance";
 import { severityOfStatus } from "@/lib/data/network";
 import { threadsForApplication } from "@/lib/data/threads";
 import {
@@ -58,7 +63,17 @@ export type CanvasView =
       readonly applicationId: ApplicationId;
       readonly threadId: ThreadId;
     }
-  | { readonly kind: "compliance" };
+  | { readonly kind: "compliance" }
+  | {
+      readonly kind: "findingGroup";
+      readonly group: GroupKind;
+      readonly value: string;
+    }
+  | {
+      readonly kind: "document";
+      readonly id: string;
+      readonly applicationId: ApplicationId;
+    };
 
 export interface AnswerGroup {
   readonly heading: string;

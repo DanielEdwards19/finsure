@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { reviewedApplications } from "./compliance";
 import { scopeFor } from "./identity";
 import {
   applicationsForBranch,
@@ -27,8 +28,38 @@ describe("network totals", () => {
   it("splits every application into exactly one severity tier", () => {
     const ok = totals.applications - totals.attention - totals.watch;
     expect(totals.attention).toBeGreaterThan(0);
-    expect(totals.watch).toBeGreaterThan(0);
+    expect(totals.watch).toBeGreaterThanOrEqual(0);
     expect(ok).toBeGreaterThanOrEqual(0);
+  });
+
+  /*
+   * Severity comes from findings, so the counts are bounded by the files that
+   * have been analysed at all — most of the network has no findings either way
+   * and is therefore neither attention nor watch. A run where these approach
+   * the total application count means severity has been wired back to the
+   * pipeline status.
+   */
+  it("counts only applications that carry findings", () => {
+    const analysed = reviewedApplications(organisation).length;
+
+    expect(analysed).toBeLessThan(totals.applications);
+    expect(totals.attention + totals.watch).toBeLessThanOrEqual(analysed);
+  });
+
+  /*
+   * The dataset currently records no POTENTIAL_GAP finding, so `watch` is
+   * legitimately zero rather than broken. Asserting it here means adding such a
+   * finding will surface the tier as newly reachable instead of appearing to be
+   * an unrelated change.
+   */
+  it("has no watch tier while no finding is a potential gap", () => {
+    const gaps = reviewedApplications(organisation).reduce(
+      (total, review) => total + review.gapCount,
+      0,
+    );
+
+    expect(gaps).toBe(0);
+    expect(totals.watch).toBe(0);
   });
 
   it("derives the average from the total", () => {

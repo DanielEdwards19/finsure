@@ -2,7 +2,10 @@
 
 import { useMemo, useState } from "react";
 
-import { reviewForApplication } from "@/lib/domain/compliance";
+import {
+  reviewForApplication,
+  severityResolverFor,
+} from "@/lib/domain/compliance";
 import { severityOfStatus } from "@/lib/data/network";
 import { money } from "@/lib/format";
 import type { DataScope } from "@/lib/domain/identity";
@@ -345,16 +348,24 @@ function itemsFor(panel: NavPanel, scope: DataScope): readonly ListItem[] {
   if (panel === "reports") return REPORTS;
   if (panel === "integrations") return INTEGRATIONS;
 
+  /*
+   * Group severities read the same findings the map markers do, so a broker
+   * cannot be green on the canvas and red in this list. An individual
+   * application still shows its own pipeline status below, which is a different
+   * statement: where the file sits in the process, not what was found in it.
+   */
+  const severityOf = severityResolverFor(scope);
+
   if (panel === "brokers") {
     return scope.brokers.map((broker) => {
       const applications = scope.applications.filter(
         (a) => a.brokerId === broker.id,
       );
       const attention = applications.filter(
-        (a) => severityOfStatus(a.status) === "attention",
+        (a) => severityOf(a) === "attention",
       ).length;
       const watch = applications.filter(
-        (a) => severityOfStatus(a.status) === "watch",
+        (a) => severityOf(a) === "watch",
       ).length;
 
       return {
@@ -377,9 +388,7 @@ function itemsFor(panel: NavPanel, scope: DataScope): readonly ListItem[] {
 
   const applications =
     panel === "alerts"
-      ? scope.applications.filter(
-          (a) => severityOfStatus(a.status) === "attention",
-        )
+      ? scope.applications.filter((a) => severityOf(a) === "attention")
       : scope.applications;
 
   return applications.map((application) => {

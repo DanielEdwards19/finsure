@@ -10,11 +10,12 @@ import { usePanelSize } from "@/lib/use-panel-size";
 import { useCommercial } from "@/lib/use-commercial";
 import { useConversations } from "@/lib/use-conversations";
 import { Canvas, canvasTitle } from "./canvas";
+import { Breadcrumbs } from "./canvas/breadcrumbs";
 import { ChatPanel } from "./chat-panel";
 import { CommercialCanvas } from "./commercial/canvas";
 import { CommercialPanel } from "./commercial/panel";
 import { Composer } from "./composer";
-import { DashboardPanel } from "./dashboard-panel";
+import { DashboardPanel } from "@/components/dashboard-panel";
 import { BackGlyph } from "./glyph";
 import { MapLayers, NetworkMap } from "./network-map";
 import {
@@ -124,6 +125,16 @@ export function Workspace() {
     if (isMobile) setSheetOpen(true);
   };
 
+  /*
+   * Opens the chat with nothing asked yet, so the reader gets the offered
+   * prompts and picks their own first question rather than being answered at.
+   */
+  const newChat = () => {
+    go("chat");
+    chat.newConversation();
+    setSheetOpen(false);
+  };
+
   const menuItems: readonly MenuItem[] = [
     {
       label: "Start commercial loan application",
@@ -191,7 +202,16 @@ export function Workspace() {
           {inCommercial ? (
             <CommercialCanvas commercial={commercial} onAsk={ask} />
           ) : (
-            <Canvas view={chat.view} scope={scope} onOpen={chat.setView} />
+            <>
+              <Breadcrumbs
+                trail={chat.trail}
+                current={chat.view}
+                scope={scope}
+                onCrumb={chat.goCrumb}
+                onBack={chat.goBack}
+              />
+              <Canvas view={chat.view} scope={scope} onOpen={chat.setView} />
+            </>
           )}
         </div>
       )}
@@ -281,11 +301,12 @@ export function Workspace() {
           <div className="flex min-h-0 scrollbar-thin flex-1 flex-col overflow-auto">
             <DashboardPanel
               scope={scope}
-              onSwitchIdentity={(id) => {
+              onSwitchIdentity={(id: UserId) => {
                 setUserId(id);
                 chat.reset();
               }}
               onAsk={ask}
+              onNewChat={newChat}
               onStartCommercial={() => go("commercial")}
             />
           </div>

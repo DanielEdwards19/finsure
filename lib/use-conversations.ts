@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { ask } from "@/lib/domain/ask";
+import { ask, focusedApplication } from "@/lib/domain/ask";
 import type { Answer, CanvasView } from "@/lib/domain/answers";
+import { trailAfter } from "@/lib/domain/canvas-trail";
 import type { DataScope } from "@/lib/domain/identity";
 
 export interface UserMessage {
@@ -72,6 +73,11 @@ export interface Chat {
   readonly conversations: readonly Conversation[];
   readonly active: Conversation | null;
   readonly view: CanvasView;
+  /** Views opened to reach the current one, for breadcrumbs. */
+  readonly trail: readonly CanvasView[];
+  readonly goBack: () => void;
+  /** `-1` returns to the map. */
+  readonly goCrumb: (index: number) => void;
   /** Steps being worked through, or null when idle. */
   readonly working: {
     readonly steps: readonly string[];
@@ -107,11 +113,42 @@ export function useConversations(scope: DataScope): Chat {
     [],
   );
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [view, setView] = useState<CanvasView>({ kind: "map" });
+  const [canvas, setCanvas] = useState<{
+    readonly view: CanvasView;
+    readonly trail: readonly CanvasView[];
+  }>({ view: { kind: "map" }, trail: [] });
   const [working, setWorking] = useState<Chat["working"]>(null);
 
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const sequence = useRef(0);
+
+  const replaceView = useCallback((next: CanvasView) => {
+    setCanvas({ view: next, trail: [] });
+  }, []);
+
+  const setView = useCallback((next: CanvasView) => {
+    setCanvas(({ view, trail }) => ({
+      view: next,
+      trail: trailAfter(view, trail, next),
+    }));
+  }, []);
+
+  const goCrumb = useCallback((index: number) => {
+    setCanvas(({ view, trail }) => {
+      if (index < 0) return { view: { kind: "map" }, trail: [] };
+      const target = trail[index];
+      if (!target) return { view, trail };
+      return { view: target, trail: trail.slice(0, index) };
+    });
+  }, []);
+
+  const goBack = useCallback(() => {
+    setCanvas(({ trail }) => {
+      const target = trail[trail.length - 1];
+      if (!target) return { view: { kind: "map" }, trail: [] };
+      return { view: target, trail: trail.slice(0, -1) };
+    });
+  }, []);
 
   const clearTimers = useCallback(() => {
     timers.current.forEach(clearTimeout);
@@ -148,13 +185,13 @@ export function useConversations(scope: DataScope): Chat {
                   : c,
               ),
             );
-            if (answer.view) setView(answer.view);
+            if (answer.view) replaceView(answer.view);
           },
           steps.length * STEP_MS + 320,
         ),
       );
     },
-    [clearTimers],
+    [clearTimers, replaceView],
   );
 
   const start = useCallback(
@@ -182,7 +219,13 @@ export function useConversations(scope: DataScope): Chat {
       const trimmed = question.trim();
       if (!trimmed) return;
 
-      const answer = ask(scope, trimmed);
+      /*
+       * The canvas is the subject of the conversation, so a question pointing at
+       * "this file" is resolved against whatever it currently has open.
+       */
+      const answer = ask(scope, trimmed, {
+        focus: focusedApplication(scope, canvas.view),
+      });
       const existing = activeId
         ? conversations.find((c) => c.id === activeId)
         : null;
@@ -206,7 +249,7 @@ export function useConversations(scope: DataScope): Chat {
 
       start(trimmed, title ?? trimmed, answer);
     },
-    [scope, activeId, conversations, commit, start],
+    [scope, canvas.view, activeId, conversations, commit, start],
   );
 
   const openView = useCallback(
@@ -227,8 +270,8 @@ export function useConversations(scope: DataScope): Chat {
       ...current,
     ]);
     setActiveId(id);
-    setView({ kind: "map" });
-  }, [clearTimers]);
+    replaceView({ kind: "map" });
+  }, [clearTimers, replaceView]);
 
   const open = useCallback(
     (id: string) => {
@@ -237,25 +280,28 @@ export function useConversations(scope: DataScope): Chat {
       setActiveId(id);
       setConversations((current) => {
         const found = current.find((c) => c.id === id);
-        if (found) setView(found.view);
+        if (found) replaceView(found.view);
         return current;
       });
     },
-    [clearTimers],
+    [clearTimers, replaceView],
   );
 
   const reset = useCallback(() => {
     clearTimers();
     setConversations([]);
     setActiveId(null);
-    setView({ kind: "map" });
+    replaceView({ kind: "map" });
     setWorking(null);
-  }, [clearTimers]);
+  }, [clearTimers, replaceView]);
 
   return {
     conversations,
     active: conversations.find((c) => c.id === activeId) ?? null,
-    view,
+    view: canvas.view,
+    trail: canvas.trail,
+    goBack,
+    goCrumb,
     working,
     askQuestion,
     openView,

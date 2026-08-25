@@ -375,6 +375,19 @@ export const documentsForReference = (
 ): readonly ClientDocument[] =>
   reference === DOCUMENTED_REFERENCE ? DOCUMENTS : [];
 
+/**
+ * Client-record documents only. The prototype's own answer key and packaging
+ * manifest are not part of the file a broker would open.
+ */
+const PROTOTYPE_SOURCES = new Set(["Prototype logic", "Prototype package"]);
+
+export const recordDocumentsFor = (
+  reference: FileReference,
+): readonly ClientDocument[] =>
+  documentsForReference(reference).filter(
+    (document) => !PROTOTYPE_SOURCES.has(document.source),
+  );
+
 export const findDocument = (id: string): ClientDocument | null =>
   DOCUMENTS.find((d) => d.id === id) ?? null;
 

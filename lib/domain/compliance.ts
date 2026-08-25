@@ -25,12 +25,14 @@ import type { DataScope } from "./identity";
 import {
   FINDING_SEVERITY_ORDER,
   fileReference,
+  type Application,
   type ApplicationId,
   type AssessmentState,
   type Confidence,
   type FileReference,
   type FindingSeverity,
   type Message,
+  type Severity,
   type Thread,
   type ThreadId,
 } from "./types";
@@ -44,6 +46,9 @@ export const REVIEW_BANNER =
 
 export const SOURCE_SCOPE =
   "Results are based on the email archive currently available. Relevant evidence may exist in other connected systems.";
+
+/** When the curated email archive was last analysed. Indicative prototype date. */
+export const ANALYSIS_DATE = "30 July 2026, 9:12 AM AEST";
 
 export interface ReviewRule {
   readonly id: string;
@@ -435,6 +440,32 @@ export const reviewForApplication = (
 
 export const findFinding = (scope: DataScope, id: string): Finding | null =>
   allFindings(scope).find((f) => f.id === id) ?? null;
+
+/**
+ * The single severity rule for every consumer — map markers, tables and totals
+ * alike, so none of them can disagree about the same application.
+ *
+ * GUARDRAIL (`docs/DESIGN.md` §2): severity comes from findings in analysed
+ * correspondence, never from the pipeline status. An application whose emails
+ * have not been analysed has no findings either way, so it reads as `ok` rather
+ * than adversely: a pipeline stage is not evidence of a compliance concern, and
+ * treating it as one would be inferring a negative finding from an absence of
+ * analysis.
+ *
+ * `ok` here means "nothing found requiring review", which is not a statement
+ * that the file is compliant. Callers that render a word rather than a colour
+ * are responsible for saying which of the two applies — see `statusWord` in
+ * `map.ts`.
+ */
+export const severityResolverFor =
+  (scope: DataScope) =>
+  (application: Application): Severity => {
+    const review = reviewForApplication(scope, application.id);
+    if (!review) return "ok";
+    if (review.reviewCount > 0) return "attention";
+    if (review.gapCount > 0) return "watch";
+    return "ok";
+  };
 
 // ---------------------------------------------------------------------------
 // Aggregation

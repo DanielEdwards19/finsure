@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { TRUTH } from "@/lib/data/raw/compliance-truth.generated";
 import { THREADS } from "@/lib/data/threads";
+import { findDocumentByFile } from "./client-files";
 import { scopeFor } from "./identity";
 import {
   CATEGORIES,
@@ -174,6 +175,20 @@ describe("expected findings for FIN-DEMO-0002", () => {
     expect(open[0].suggestedAction.length).toBeGreaterThan(0);
   });
 
+  it("cites the needs assessment and file notes on the information-gathering finding", () => {
+    const finding = review!.findings.find(
+      (f) =>
+        f.headline === "Information gathering and objectives were recorded",
+    );
+    expect(finding?.documents).toEqual([
+      "03_Needs_and_Objectives_Assessment.docx",
+      "04_Broker_File_Notes.docx",
+    ]);
+    expect(
+      finding!.documents.map((file) => findDocumentByFile(file)?.name),
+    ).toEqual(["Needs and objectives assessment", "Broker file notes"]);
+  });
+
   it("evidences objectives, comparison, income verification, referral and privacy", () => {
     const headlines = review!.findings.map((f) => f.headline.toLowerCase());
     expect(headlines.some((h) => h.includes("objectives"))).toBe(true);
@@ -197,6 +212,12 @@ describe("network aggregation", () => {
   it("distributes findings across severities without loss", () => {
     const total = Object.values(network.bySeverity).reduce((a, b) => a + b, 0);
     expect(total).toBe(allFindings(organisation).length);
+  });
+
+  it("counts every severity so the card always has five rows", () => {
+    expect(Object.keys(network.bySeverity)).toEqual([
+      ...FINDING_SEVERITY_ORDER,
+    ]);
   });
 
   it("orders rule tallies by items requiring review", () => {
