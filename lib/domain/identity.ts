@@ -39,8 +39,7 @@ export const IDENTITIES: readonly Identity[] = [
     branchId: null,
     brokerId: null,
     initials: "BC",
-    scopeLabel:
-      "All branches, brokers, clients and lenders across the network",
+    scopeLabel: "All branches, brokers, clients and lenders across the network",
   },
   {
     id: userId("USER-BO-001"),

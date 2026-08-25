@@ -48,7 +48,11 @@ const STEPS = {
     "Reconciling evidence and citations",
     "Preparing the answer",
   ],
-  short: ["Reading your request", "Searching the record", "Preparing the answer"],
+  short: [
+    "Reading your request",
+    "Searching the record",
+    "Preparing the answer",
+  ],
 } as const;
 
 const STEP_MS = 620;
@@ -69,10 +73,17 @@ export interface Chat {
   readonly active: Conversation | null;
   readonly view: CanvasView;
   /** Steps being worked through, or null when idle. */
-  readonly working: { readonly steps: readonly string[]; readonly at: number } | null;
+  readonly working: {
+    readonly steps: readonly string[];
+    readonly at: number;
+  } | null;
   readonly askQuestion: (question: string, title?: string) => void;
   /** Open a canvas view without asking anything, e.g. from a map marker. */
-  readonly openView: (view: CanvasView, title: string, question: string) => void;
+  readonly openView: (
+    view: CanvasView,
+    title: string,
+    question: string,
+  ) => void;
   readonly newConversation: () => void;
   readonly open: (id: string) => void;
   readonly setView: (view: CanvasView) => void;
@@ -92,7 +103,9 @@ export interface Chat {
  * which systems were read is part of the claim.
  */
 export function useConversations(scope: DataScope): Chat {
-  const [conversations, setConversations] = useState<readonly Conversation[]>([]);
+  const [conversations, setConversations] = useState<readonly Conversation[]>(
+    [],
+  );
   const [activeId, setActiveId] = useState<string | null>(null);
   const [view, setView] = useState<CanvasView>({ kind: "map" });
   const [working, setWorking] = useState<Chat["working"]>(null);
@@ -116,10 +129,7 @@ export function useConversations(scope: DataScope): Chat {
       steps.forEach((_, index) => {
         if (index === 0) return;
         timers.current.push(
-          setTimeout(
-            () => setWorking({ steps, at: index }),
-            index * STEP_MS,
-          ),
+          setTimeout(() => setWorking({ steps, at: index }), index * STEP_MS),
         );
       });
 
@@ -183,7 +193,10 @@ export function useConversations(scope: DataScope): Chat {
         setConversations((current) =>
           current.map((c) =>
             c.id === existing.id
-              ? { ...c, messages: [...c.messages, { role: "user", text: trimmed }] }
+              ? {
+                  ...c,
+                  messages: [...c.messages, { role: "user", text: trimmed }],
+                }
               : c,
           ),
         );

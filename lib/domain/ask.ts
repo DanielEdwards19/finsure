@@ -28,7 +28,12 @@ import {
   stageAnswer,
   type Answer,
 } from "./answers";
-import { applicationTypesIn, lendersIn, resolveEntities, stagesIn } from "./network";
+import {
+  applicationTypesIn,
+  lendersIn,
+  resolveEntities,
+  stagesIn,
+} from "./network";
 import type { DataScope } from "./identity";
 
 /** Wording that scopes a question to the whole network rather than one record. */
@@ -45,11 +50,13 @@ const EMAIL =
  * overview, so they are excluded — otherwise asking for someone's file returns a
  * list of attachments instead of their application.
  */
-const DOCUMENTS = /\bfiles\b|document|attachment|paperwork|statement|records?\b/;
+const DOCUMENTS =
+  /\bfiles\b|document|attachment|paperwork|statement|records?\b/;
 const CLIENT_FILE = /client file|customer file|the file for\b/;
 
 const REPORT = /report|snapshot|compil|summar|position|picture|update/;
-const COVERAGE = /lowest (evidence )?coverage|worst coverage|coverage.*(low|by branch|tracking)/;
+const COVERAGE =
+  /lowest (evidence )?coverage|worst coverage|coverage.*(low|by branch|tracking)/;
 const ATTENTION =
   /need(s)? attention|requires attention|attention right now|which branch(es)?|at risk|flagged/;
 
@@ -67,7 +74,8 @@ export function ask(scope: DataScope, question: string): Answer {
       const documents = review
         ? documentsForReference(review.reference).filter(
             (d) =>
-              d.source !== "Prototype logic" && d.source !== "Prototype package",
+              d.source !== "Prototype logic" &&
+              d.source !== "Prototype package",
           )
         : [];
 
@@ -100,10 +108,12 @@ export function ask(scope: DataScope, question: string): Answer {
   }
 
   // Network-level compliance review.
-  if (COMPLIANCE.test(text) && NETWORK.test(text)) return complianceAnswer(scope);
+  if (COMPLIANCE.test(text) && NETWORK.test(text))
+    return complianceAnswer(scope);
 
   // Network-level position.
-  if (NETWORK.test(text) && REPORT.test(text)) return networkReportAnswer(scope);
+  if (NETWORK.test(text) && REPORT.test(text))
+    return networkReportAnswer(scope);
   if (COVERAGE.test(text)) return coverageAnswer(scope);
   if (ATTENTION.test(text)) return attentionAnswer(scope);
 

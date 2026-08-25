@@ -82,9 +82,7 @@ interface Draft {
 }
 
 const blank = (value: FieldValue | null | undefined): boolean =>
-  value == null ||
-  value === "" ||
-  (Array.isArray(value) && value.length === 0);
+  value == null || value === "" || (Array.isArray(value) && value.length === 0);
 
 const display = (value: FieldValue): string =>
   Array.isArray(value) ? value.join("\n") : String(value);
@@ -118,10 +116,7 @@ const CLIENT_FIGURE = "Provided by the client during guided setup";
 const BROKER_ADJUSTMENT = "Broker adjustment";
 const ADJUSTMENT_REVIEWED = "Broker adjustment — evidence reviewed";
 
-function resolve(
-  state: CommercialState,
-  draft: Draft,
-): SectionRow | null {
+function resolve(state: CommercialState, draft: Draft): SectionRow | null {
   if (blank(draft.value)) return null;
 
   const key = draft.fieldKey ?? null;
@@ -211,9 +206,7 @@ function drafts(
        */
       row(
         "Regulatory treatment",
-        blank(f.purposes)
-          ? null
-          : (f.regTreatment ?? "Requires broker review"),
+        blank(f.purposes) ? null : (f.regTreatment ?? "Requires broker review"),
         SOURCE_BROKER,
       ),
       row("Current indication", f.purposeIndication, SOURCE_BROKER),
@@ -330,7 +323,11 @@ function drafts(
     ],
 
     financials: [
-      row("Financial information available", f.evidenceAvailable, SOURCE_BROKER),
+      row(
+        "Financial information available",
+        f.evidenceAvailable,
+        SOURCE_BROKER,
+      ),
       cash(
         "Revenue — most recent completed year",
         f.rev1,
@@ -448,7 +445,12 @@ function drafts(
         "propertyAddress",
       ),
       row("Occupancy", f.occupancy, SOURCE_BROKER),
-      row("Proposed third-party tenant", f.tenantName, SOURCE_BROKER, "tenantName"),
+      row(
+        "Proposed third-party tenant",
+        f.tenantName,
+        SOURCE_BROKER,
+        "tenantName",
+      ),
       row(
         "Proposed tenant area",
         f.tenantArea
@@ -518,7 +520,8 @@ const TONE: Readonly<Record<string, Tone>> = {
 function sectionAnswered(state: CommercialState, id: string): boolean {
   const questions = plan(state).filter((qid) => QUESTIONS[qid].section === id);
   return (
-    questions.length > 0 && questions.every((qid) => Boolean(state.answers[qid]))
+    questions.length > 0 &&
+    questions.every((qid) => Boolean(state.answers[qid]))
   );
 }
 
@@ -568,12 +571,7 @@ export function canvasSections(
       .filter((r): r is SectionRow => r != null);
 
     const sectionFindings = findings.filter((f) => f.section === section.id);
-    const label = sectionState(
-      state,
-      section.id,
-      rows.length,
-      sectionFindings,
-    );
+    const label = sectionState(state, section.id, rows.length, sectionFindings);
 
     return {
       id: section.id,

@@ -75,8 +75,10 @@ describe("branch roll-up", () => {
     // A branch holding an application requiring attention must itself read as
     // attention, so a marker colour cannot contradict the record it contains.
     for (const row of rollup) {
-      if (row.attention > 0) expect(row.severity, row.branch.name).toBe("attention");
-      else if (row.watch > 0) expect(row.severity, row.branch.name).toBe("watch");
+      if (row.attention > 0)
+        expect(row.severity, row.branch.name).toBe("attention");
+      else if (row.watch > 0)
+        expect(row.severity, row.branch.name).toBe("watch");
       else expect(row.severity, row.branch.name).toBe("ok");
     }
   });
@@ -132,7 +134,10 @@ describe("entity resolution", () => {
   });
 
   it("ignores stop words so no record matches on filler alone", () => {
-    const result = resolveEntities(organisation, "show me all the applications");
+    const result = resolveEntities(
+      organisation,
+      "show me all the applications",
+    );
     expect(result.customers).toEqual([]);
     expect(result.brokers).toEqual([]);
     expect(result.branches).toEqual([]);
@@ -163,7 +168,10 @@ describe("entity resolution", () => {
   });
 
   it("preserves & in customer names", () => {
-    const { customers } = resolveEntities(organisation, "Sarah & Michael Thompson");
+    const { customers } = resolveEntities(
+      organisation,
+      "Sarah & Michael Thompson",
+    );
     expect(customers[0].record.customer).toBe("Sarah & Michael Thompson");
   });
 });

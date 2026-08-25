@@ -21,17 +21,61 @@ export interface PipelineStep {
 }
 
 export const PIPELINE: readonly PipelineStep[] = [
-  { key: "enquiry", label: "Initial enquiry", note: "Client contact and purpose captured" },
-  { key: "factfind", label: "Fact find", note: "Circumstances, needs and objectives recorded" },
-  { key: "docs", label: "Document collection", note: "Income, identity and liability evidence gathered" },
-  { key: "compare", label: "Product comparison", note: "Alternatives assessed against the client’s objectives" },
-  { key: "assess", label: "Serviceability assessment", note: "Servicing and funds to complete calculated" },
-  { key: "prepare", label: "Application preparation", note: "Application and supporting records assembled" },
-  { key: "submit", label: "Submitted to lender", note: "Application lodged with the lender" },
-  { key: "cond", label: "Conditional approval", note: "Lender conditions issued" },
-  { key: "formal", label: "Formal approval", note: "All conditions satisfied and approval confirmed" },
-  { key: "loandocs", label: "Loan documents", note: "Documents issued, signed and returned" },
-  { key: "booked", label: "Settlement booked", note: "Settlement date confirmed with all parties" },
+  {
+    key: "enquiry",
+    label: "Initial enquiry",
+    note: "Client contact and purpose captured",
+  },
+  {
+    key: "factfind",
+    label: "Fact find",
+    note: "Circumstances, needs and objectives recorded",
+  },
+  {
+    key: "docs",
+    label: "Document collection",
+    note: "Income, identity and liability evidence gathered",
+  },
+  {
+    key: "compare",
+    label: "Product comparison",
+    note: "Alternatives assessed against the client’s objectives",
+  },
+  {
+    key: "assess",
+    label: "Serviceability assessment",
+    note: "Servicing and funds to complete calculated",
+  },
+  {
+    key: "prepare",
+    label: "Application preparation",
+    note: "Application and supporting records assembled",
+  },
+  {
+    key: "submit",
+    label: "Submitted to lender",
+    note: "Application lodged with the lender",
+  },
+  {
+    key: "cond",
+    label: "Conditional approval",
+    note: "Lender conditions issued",
+  },
+  {
+    key: "formal",
+    label: "Formal approval",
+    note: "All conditions satisfied and approval confirmed",
+  },
+  {
+    key: "loandocs",
+    label: "Loan documents",
+    note: "Documents issued, signed and returned",
+  },
+  {
+    key: "booked",
+    label: "Settlement booked",
+    note: "Settlement date confirmed with all parties",
+  },
   { key: "settled", label: "Settled", note: "Loan funded and file finalised" },
 ];
 

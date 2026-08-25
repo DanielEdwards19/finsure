@@ -129,9 +129,7 @@ export function Workspace() {
       label: "Start commercial loan application",
       run: () => go("commercial"),
     },
-    ...(scope.isBroker
-      ? []
-      : [{ label: "Brokers", run: () => go("brokers") }]),
+    ...(scope.isBroker ? [] : [{ label: "Brokers", run: () => go("brokers") }]),
     { label: "Clients", run: () => go("clients") },
     { label: "Alerts", run: () => go("alerts") },
     {
@@ -181,7 +179,7 @@ export function Workspace() {
       {showCanvas && (
         <div
           ref={canvas}
-          className="scrollbar-thin absolute inset-0 z-1 overflow-auto transition-[padding] duration-200"
+          className="absolute inset-0 z-1 scrollbar-thin overflow-auto transition-[padding] duration-200"
           style={{
             background: "var(--gradient-page)",
             paddingTop: isMobile ? 60 : narrowCanvas ? 108 : 44,
@@ -280,7 +278,7 @@ export function Workspace() {
             }}
           />
         ) : (
-          <div className="scrollbar-thin flex min-h-0 flex-1 flex-col overflow-auto">
+          <div className="flex min-h-0 scrollbar-thin flex-1 flex-col overflow-auto">
             <DashboardPanel
               scope={scope}
               onSwitchIdentity={(id) => {

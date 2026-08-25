@@ -19,7 +19,10 @@ import {
 } from "@/lib/domain/commercial/derive";
 import { QUESTIONS } from "@/lib/domain/commercial/flow";
 import { reduce, type CommercialAction } from "@/lib/domain/commercial/reducer";
-import { createApplication, type CommercialState } from "@/lib/domain/commercial/state";
+import {
+  createApplication,
+  type CommercialState,
+} from "@/lib/domain/commercial/state";
 
 /**
  * Everything the commercial screens read, recomputed from one immutable state.

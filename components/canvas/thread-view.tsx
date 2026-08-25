@@ -75,12 +75,12 @@ export function ThreadView({
                   </span>
                 </span>
 
-                <span className="text-meta text-secondary [overflow-wrap:anywhere]">
+                <span className="text-meta [overflow-wrap:anywhere] text-secondary">
                   To: {message.to}
                   {message.cc && ` · Cc: ${message.cc}`}
                 </span>
 
-                <p className="m-0 text-sm leading-6 whitespace-pre-line [overflow-wrap:anywhere]">
+                <p className="m-0 text-sm leading-6 [overflow-wrap:anywhere] whitespace-pre-line">
                   {message.body}
                 </p>
 

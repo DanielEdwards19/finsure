@@ -37,8 +37,7 @@ export const tone: Record<Tone, { fill: string; text: string }> = {
 
 export const gradient = {
   page: "linear-gradient(180deg,#002D37 0%,#004E5F 100%)",
-  signIn:
-    "linear-gradient(163.884deg,rgb(1,29,34) 13.74%,rgb(0,16,19) 98.76%)",
+  signIn: "linear-gradient(163.884deg,rgb(1,29,34) 13.74%,rgb(0,16,19) 98.76%)",
 } as const;
 
 /** Viewport width below which the app switches to the mobile sheet layout. */

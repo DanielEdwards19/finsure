@@ -99,7 +99,8 @@ describe("review set", () => {
 
   it("never claims a file is compliant or non-compliant", () => {
     // docs/DESIGN.md §2: the product may not make that determination.
-    const forbidden = /\bnon-?compliant\b|\bis compliant\b|\bfully compliant\b|\bbreach of\b/i;
+    const forbidden =
+      /\bnon-?compliant\b|\bis compliant\b|\bfully compliant\b|\bbreach of\b/i;
     for (const app of reviewed) {
       expect(app.headline, app.reference).not.toMatch(forbidden);
       for (const finding of app.findings) {
@@ -115,7 +116,9 @@ describe("review set", () => {
       const highest = [...FINDING_SEVERITY_ORDER]
         .reverse()
         .find((s) => app.findings.some((f) => f.severity === s));
-      expect(app.highestSeverity, app.reference).toBe(highest ?? "INFORMATIONAL");
+      expect(app.highestSeverity, app.reference).toBe(
+        highest ?? "INFORMATIONAL",
+      );
     }
   });
 
@@ -175,7 +178,9 @@ describe("expected findings for FIN-DEMO-0002", () => {
     const headlines = review!.findings.map((f) => f.headline.toLowerCase());
     expect(headlines.some((h) => h.includes("objectives"))).toBe(true);
     expect(headlines.some((h) => h.includes("compar"))).toBe(true);
-    expect(headlines.some((h) => h.includes("employment") || h.includes("income"))).toBe(true);
+    expect(
+      headlines.some((h) => h.includes("employment") || h.includes("income")),
+    ).toBe(true);
   });
 });
 
@@ -303,12 +308,19 @@ describe("finding groups", () => {
     const references = group.applications.map((a) => a.reference);
     expect(new Set(references).size).toBe(references.length);
 
-    const counted = group.applications.reduce((n, a) => n + a.findings.length, 0);
+    const counted = group.applications.reduce(
+      (n, a) => n + a.findings.length,
+      0,
+    );
     expect(counted).toBe(group.total);
   });
 
   it("returns an empty group for a value nothing matches", () => {
-    const group = findingGroup(organisation, "category", "Nonexistent category");
+    const group = findingGroup(
+      organisation,
+      "category",
+      "Nonexistent category",
+    );
     expect(group.total).toBe(0);
     expect(group.applications).toEqual([]);
   });

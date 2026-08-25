@@ -4,13 +4,26 @@ import { severityOfStatus } from "@/lib/data/network";
 import { threadsForApplication } from "@/lib/data/threads";
 import { documentsForReference } from "@/lib/domain/client-files";
 import { reviewForApplication } from "@/lib/domain/compliance";
-import { nextActionFor, timelineFor, timelineProgress } from "@/lib/domain/pipeline";
+import {
+  nextActionFor,
+  timelineFor,
+  timelineProgress,
+} from "@/lib/domain/pipeline";
 import { money } from "@/lib/format";
 import type { CanvasView } from "@/lib/domain/answers";
 import type { DataScope } from "@/lib/domain/identity";
 import type { StepState } from "@/lib/domain/pipeline";
 import type { Application, Severity } from "@/lib/domain/types";
-import { Card, CanvasTitle, Caveat, Field, Grid, Label, Pill, Section } from "./ui";
+import {
+  Card,
+  CanvasTitle,
+  Caveat,
+  Field,
+  Grid,
+  Label,
+  Pill,
+  Section,
+} from "./ui";
 import type { Tone } from "@/lib/design/tokens";
 
 const TONE_OF: Record<Severity, Tone> = {
@@ -113,7 +126,7 @@ export function ApplicationView({
                   <span className="text-base leading-[22px] font-medium [overflow-wrap:anywhere]">
                     {guidance.nextStep}
                   </span>
-                  <span className="text-sm leading-5 text-secondary [overflow-wrap:anywhere]">
+                  <span className="text-sm leading-5 [overflow-wrap:anywhere] text-secondary">
                     {guidance.nextStepNote}
                   </span>
                 </span>
@@ -135,7 +148,7 @@ export function ApplicationView({
                     <span className="text-sm leading-5 font-medium [overflow-wrap:anywhere]">
                       {action.headline}
                     </span>
-                    <span className="text-sm leading-5 text-secondary [overflow-wrap:anywhere]">
+                    <span className="text-sm leading-5 [overflow-wrap:anywhere] text-secondary">
                       {action.action}
                     </span>
                   </span>
@@ -215,8 +228,8 @@ export function ApplicationView({
               {review.headline}
             </span>
             <span className="text-sm leading-5 text-secondary">
-              {review.evidenceCount} evidence found · {review.gapCount} potential
-              gaps · {review.reviewCount} requiring review ·{" "}
+              {review.evidenceCount} evidence found · {review.gapCount}{" "}
+              potential gaps · {review.reviewCount} requiring review ·{" "}
               {review.coverage == null ? "—" : `${review.coverage}%`} email
               evidence coverage
             </span>
@@ -228,8 +241,8 @@ export function ApplicationView({
               Open the full review →
             </button>
             <Caveat>
-              Automated evidence review. Human assessment required. No compliance
-              determination is made.
+              Automated evidence review. Human assessment required. No
+              compliance determination is made.
             </Caveat>
           </Card>
         </Section>

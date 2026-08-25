@@ -35,21 +35,24 @@ export const SCAN_RULES: readonly ScanRule[] = [
     id: "purpose_misstated",
     kind: "concern",
     category: "Loan purpose misstated",
-    pattern: /put the purpose down as|cleaner as one purpose|blank purpose or account fields/i,
+    pattern:
+      /put the purpose down as|cleaner as one purpose|blank purpose or account fields/i,
     why: "Broker proposes recording a loan purpose that differs from the purpose the client described.",
   },
   {
     id: "coach_to_mislead",
     kind: "concern",
     category: "Client coached to withhold information",
-    pattern: /if anyone asks|don't volunteer the |we don't need to draw attention|keep the new contract off email/i,
+    pattern:
+      /if anyone asks|don't volunteer the |we don't need to draw attention|keep the new contract off email/i,
     why: "Broker instructs the client to withhold or shape information provided to the lender.",
   },
   {
     id: "conceal_liability",
     kind: "concern",
     category: "Liability treated as not disclosable",
-    pattern: /if they don't appear on the credit report|zero balance means it doesn't count|don't worry about it\. they're small/i,
+    pattern:
+      /if they don't appear on the credit report|zero balance means it doesn't count|don't worry about it\. they're small/i,
     why: "A known debt or facility is treated as not requiring disclosure to the lender.",
   },
   {
@@ -70,21 +73,24 @@ export const SCAN_RULES: readonly ScanRule[] = [
     id: "timing_manipulation",
     kind: "concern",
     category: "Submission timed to avoid disclosure",
-    pattern: /lodge it before the final payslip|deal with it only if boq asks|don't change jobs until after formal approval/i,
+    pattern:
+      /lodge it before the final payslip|deal with it only if boq asks|don't change jobs until after formal approval/i,
     why: "Submission timing used to avoid disclosing a known material change.",
   },
   {
     id: "signing_irregularity",
     kind: "concern",
     category: "Signing irregularity",
-    pattern: /leave any blank|don't need to read the standard terms|just sign all the yellow tabs|just sign where marked|sign it today/i,
+    pattern:
+      /leave any blank|don't need to read the standard terms|just sign all the yellow tabs|just sign where marked|sign it today/i,
     why: "Client directed to sign without review, or documents left incomplete at signing.",
   },
   {
     id: "guarantor_understated",
     kind: "concern",
     category: "Guarantor risk understated",
-    pattern: /mainly a formality|nothing for them to worry about|heaps of equity/i,
+    pattern:
+      /mainly a formality|nothing for them to worry about|heaps of equity/i,
     why: "Guarantor obligations or risks presented as lower than they are.",
   },
   {
@@ -112,7 +118,8 @@ export const SCAN_RULES: readonly ScanRule[] = [
     id: "privacy_breach",
     kind: "concern",
     category: "Privacy concern",
-    pattern: /copied the builder's accounts team|alternate gmail address|password is your date of birth/i,
+    pattern:
+      /copied the builder's accounts team|alternate gmail address|password is your date of birth/i,
     why: "Client financial information disclosed to unauthorised recipients or weakly protected.",
   },
 
@@ -121,63 +128,72 @@ export const SCAN_RULES: readonly ScanRule[] = [
     id: "submission_paused",
     kind: "supporting",
     category: "Submission paused pending verification",
-    pattern: /paused submission|i won't submit|will not submit the application|no application will be submitted|not to submit another application/i,
+    pattern:
+      /paused submission|i won't submit|will not submit the application|no application will be submitted|not to submit another application/i,
     why: "Broker withheld submission until information was verified.",
   },
   {
     id: "costs_disclosed",
     kind: "supporting",
     category: "Costs disclosed",
-    pattern: /switching costs are|estimated break cost|discharge and application costs|refinancing and discharge costs/i,
+    pattern:
+      /switching costs are|estimated break cost|discharge and application costs|refinancing and discharge costs/i,
     why: "Costs quantified and disclosed to the client in writing.",
   },
   {
     id: "comparison_provided",
     kind: "supporting",
     category: "Product comparison provided",
-    pattern: /i've attached a comparison|product comparison|attached is the revised funds-to-complete|i'll also compare/i,
+    pattern:
+      /i've attached a comparison|product comparison|attached is the revised funds-to-complete|i'll also compare/i,
     why: "Alternatives compared and provided to the client.",
   },
   {
     id: "risk_explained",
     kind: "supporting",
     category: "Risks explained",
-    pattern: /none is guaranteed|not guaranteed|can change before settlement|puts the home at risk|may increase the total interest|is not a guarantee of final approval/i,
+    pattern:
+      /none is guaranteed|not guaranteed|can change before settlement|puts the home at risk|may increase the total interest|is not a guarantee of final approval/i,
     why: "Material risks and limits of certainty explained.",
   },
   {
     id: "verification_first",
     kind: "supporting",
     category: "Verification before reliance",
-    pattern: /until your parents confirm|verified commitments|should not describe|do not ask them to sign/i,
+    pattern:
+      /until your parents confirm|verified commitments|should not describe|do not ask them to sign/i,
     why: "Broker required evidence before relying on a client statement.",
   },
   {
     id: "instruction_recorded",
     kind: "supporting",
     category: "Instruction recorded",
-    pattern: /i've recorded that instruction|updated the needs and objectives record|confirm if the note accurately records/i,
+    pattern:
+      /i've recorded that instruction|updated the needs and objectives record|confirm if the note accurately records/i,
     why: "Client instruction or discussion recorded on file.",
   },
   {
     id: "scope_respected",
     kind: "supporting",
     category: "Referred to the right professional",
-    pattern: /confirmed by your conveyancer|cannot provide tax advice|can't advise you on the contract|ask your tax adviser|speak with your solicitor/i,
+    pattern:
+      /confirmed by your conveyancer|cannot provide tax advice|can't advise you on the contract|ask your tax adviser|speak with your solicitor/i,
     why: "Broker referred a matter outside their scope to the appropriate adviser.",
   },
   {
     id: "secure_handling",
     kind: "supporting",
     category: "Secure document handling",
-    pattern: /secure broker portal|secure link|don't email any further unredacted|upload these through the secure/i,
+    pattern:
+      /secure broker portal|secure link|don't email any further unredacted|upload these through the secure/i,
     why: "Client documents routed through secure channels.",
   },
   {
     id: "source_of_funds",
     kind: "supporting",
     category: "Source of funds checked",
-    pattern: /evidence of the source|record that accurately|requires a gift declaration|non-repayable gift/i,
+    pattern:
+      /evidence of the source|record that accurately|requires a gift declaration|non-repayable gift/i,
     why: "Source of a material credit or contribution verified.",
   },
 ];
@@ -306,7 +322,10 @@ export interface NetworkCorrespondence extends CorrespondenceSummary {
   readonly flaggedThreads: readonly Thread[];
   readonly clearThreads: readonly Thread[];
   /** Concern category to the number of files it appears in, most common first. */
-  readonly themes: readonly { readonly category: string; readonly files: number }[];
+  readonly themes: readonly {
+    readonly category: string;
+    readonly files: number;
+  }[];
 }
 
 /** Correspondence roll-up across everything an identity may see. */

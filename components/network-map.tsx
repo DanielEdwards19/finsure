@@ -95,9 +95,7 @@ export function NetworkMap({
 }
 
 /** The iframe expects a flag per layer rather than a list of active ones. */
-const asFlags = (
-  active: readonly MapLayer[],
-): Record<MapLayer, boolean> => ({
+const asFlags = (active: readonly MapLayer[]): Record<MapLayer, boolean> => ({
   lenders: active.includes("lenders"),
   branches: active.includes("branches"),
   brokers: active.includes("brokers"),
@@ -159,7 +157,9 @@ export function MapLayers({
             <span
               className="block size-2 rounded-full"
               style={{
-                background: on ? "var(--color-accent)" : "rgb(255 255 255 / 0.25)",
+                background: on
+                  ? "var(--color-accent)"
+                  : "rgb(255 255 255 / 0.25)",
               }}
             />
             <span>{LAYER_LABEL[layer]}</span>

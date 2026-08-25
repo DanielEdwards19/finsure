@@ -11,12 +11,7 @@ import {
 import { money, shortMoney } from "@/lib/format";
 import type { CanvasView } from "@/lib/domain/answers";
 import type { DataScope } from "@/lib/domain/identity";
-import type {
-  Application,
-  Branch,
-  Broker,
-  Severity,
-} from "@/lib/domain/types";
+import type { Application, Branch, Broker, Severity } from "@/lib/domain/types";
 import type { Tone } from "@/lib/design/tokens";
 import { Card, CanvasTitle, Caveat, Field, Grid, Pill, Section } from "./ui";
 
@@ -52,9 +47,7 @@ function Stat({
         {label}
       </span>
       <span className="text-[26px] leading-none font-medium">{value}</span>
-      {sub && (
-        <span className="text-xs font-medium text-secondary">{sub}</span>
-      )}
+      {sub && <span className="text-xs font-medium text-secondary">{sub}</span>}
     </Card>
   );
 }
@@ -252,7 +245,7 @@ export function BranchView({
               <span className="text-base leading-[19px] font-medium">
                 {broker.name}
               </span>
-              <span className="text-secondary-sm text-secondary [overflow-wrap:anywhere]">
+              <span className="text-secondary-sm [overflow-wrap:anywhere] text-secondary">
                 {broker.email}
               </span>
               <span className="text-secondary-sm text-secondary">

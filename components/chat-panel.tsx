@@ -46,13 +46,13 @@ export function ChatPanel({
 
       <div
         ref={scroller}
-        className="scrollbar-thin flex min-h-0 flex-1 flex-col gap-6 overflow-auto px-6 pt-4 pb-2"
+        className="flex min-h-0 scrollbar-thin flex-1 flex-col gap-6 overflow-auto px-6 pt-4 pb-2"
       >
         {empty && (
           <p className="m-0 px-0.5 py-1.5 text-[13px] leading-relaxed text-secondary">
             Ask anything about the client or the network. Answers are grounded
-            only in the record, and every figure states its source. The canvas on
-            the left responds.
+            only in the record, and every figure states its source. The canvas
+            on the left responds.
           </p>
         )}
 

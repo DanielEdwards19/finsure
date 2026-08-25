@@ -49,11 +49,11 @@ These are product-safety rules, not stylistic preferences.
 Three fixed identities in `access.js`. Switching identity changes the
 **accessible dataset** everywhere, not just the displayed name:
 
-| Identity | Level | Scope |
-| --- | --- | --- |
+| Identity        | Level        | Scope                                   |
+| --------------- | ------------ | --------------------------------------- |
 | Brendan Chapman | organisation | All branches, brokers, clients, lenders |
-| Leo Bell | branch owner | One branch and its brokers |
-| Rachael Nguyen | broker | Own clients and applications |
+| Leo Bell        | branch owner | One branch and its brokers              |
+| Rachael Nguyen  | broker       | Own clients and applications            |
 
 Scope is applied by `setScope` in `query.js` and `compliance.js`, so markers,
 tables, KPIs and findings all narrow together. Map layers available per identity
@@ -69,12 +69,12 @@ Every controlled answer option carries deterministic effects: canvas fields,
 document requirements, findings, a progression effect and a route. Effects,
 most restrictive first (`commercial-flow.js`):
 
-| Effect | Meaning | Comparison state |
-| --- | --- | --- |
-| `BLOCK` | Mandatory identity, authority or classification unresolved | Comparison blocked — no product cards shown at all |
-| `PAUSE` | A material fact needs broker review before a meaningful comparison | Comparison paused |
-| `COND` | May proceed with visible assumptions and conditions | Available with conditions |
-| `INFO` | Recorded for the file | No effect |
+| Effect  | Meaning                                                            | Comparison state                                   |
+| ------- | ------------------------------------------------------------------ | -------------------------------------------------- |
+| `BLOCK` | Mandatory identity, authority or classification unresolved         | Comparison blocked — no product cards shown at all |
+| `PAUSE` | A material fact needs broker review before a meaningful comparison | Comparison paused                                  |
+| `COND`  | May proceed with visible assumptions and conditions                | Available with conditions                          |
+| `INFO`  | Recorded for the file                                              | No effect                                          |
 
 The most restrictive active effect wins. When blocked, product cards are not
 rendered — nothing on screen may hint at a lender.
@@ -108,7 +108,7 @@ document workflow.
 - **Documents come first.** "Do you have the client's documents to upload?" is the first question in the flow.
 - **No file picker.** After authority and privacy confirmation, one action attaches the whole bundled pack. Analysis runs five mocked progress states, then reads the hardcoded source map.
 - **Identity is detected, not asked.** ABN and legal name are matched from the company extract (`CLIENT_MATCH`) against `CLIENT_BOOK`.
-- **Suppression rule.** A questionnaire question is suppressed *only* when its field is current, consistent and broker-confirmed. Extracted values always remain reviewable and source-linked.
+- **Suppression rule.** A questionnaire question is suppressed _only_ when its field is current, consistent and broker-confirmed. Extracted values always remain reviewable and source-linked.
 - **Confidence and review state.** Each extracted field carries a confidence and a review state (`awaiting broker confirmation`, `cross-checked, awaiting broker confirmation`, etc). High-confidence fields can be confirmed in bulk; nothing is silently accepted.
 - **Conflicts pause, they do not overwrite.** An extracted value that contradicts a recorded one raises a conflict; lender comparison pauses until it is resolved.
 - **Draft documents never resolve a fact.** The draft occupancy plan stays `Requires review`.
@@ -123,22 +123,22 @@ inline (see §8).
 
 **Colour**
 
-| Token | Value |
-| --- | --- |
-| Page background | `linear-gradient(180deg,#002D37 0%,#004E5F 100%)` |
-| Sign-in background | `linear-gradient(163.884deg,rgb(1,29,34) 13.74%,rgb(0,16,19) 98.76%)` |
-| Surface / panel | `rgb(1,28,34)` |
-| Inset / code surface | `rgb(7,8,9)` |
-| Hairline border | `rgb(43,45,49)` |
-| Primary text | `#fff` |
-| Secondary text | `#a0a2a6` |
-| Tertiary / placeholder | `rgb(130,130,130)` |
-| Accent (selection, warn) | `rgb(255,153,0)` |
-| Good | `rgba(120,255,190,.14)` fill, `rgb(190,255,225)` text |
-| Warn | `rgba(255,153,0,.16)` fill, `rgb(255,214,150)` text |
-| Bad | `rgba(255,120,110,.16)` fill, `rgb(255,190,185)` text |
-| Muted | `rgba(255,255,255,.06)` fill, `rgb(160,162,166)` text |
-| Link | `#8fb0ff`, hover `#b5caff` |
+| Token                    | Value                                                                 |
+| ------------------------ | --------------------------------------------------------------------- |
+| Page background          | `linear-gradient(180deg,#002D37 0%,#004E5F 100%)`                     |
+| Sign-in background       | `linear-gradient(163.884deg,rgb(1,29,34) 13.74%,rgb(0,16,19) 98.76%)` |
+| Surface / panel          | `rgb(1,28,34)`                                                        |
+| Inset / code surface     | `rgb(7,8,9)`                                                          |
+| Hairline border          | `rgb(43,45,49)`                                                       |
+| Primary text             | `#fff`                                                                |
+| Secondary text           | `#a0a2a6`                                                             |
+| Tertiary / placeholder   | `rgb(130,130,130)`                                                    |
+| Accent (selection, warn) | `rgb(255,153,0)`                                                      |
+| Good                     | `rgba(120,255,190,.14)` fill, `rgb(190,255,225)` text                 |
+| Warn                     | `rgba(255,153,0,.16)` fill, `rgb(255,214,150)` text                   |
+| Bad                      | `rgba(255,120,110,.16)` fill, `rgb(255,190,185)` text                 |
+| Muted                    | `rgba(255,255,255,.06)` fill, `rgb(160,162,166)` text                 |
+| Link                     | `#8fb0ff`, hover `#b5caff`                                            |
 
 **Type** — Inter 400/500/600 only. Display 32px/500, page title 28px/500,
 section title 17px/600, body 15px, secondary 12.5–13px, pill and meta 11.5px,
@@ -176,22 +176,22 @@ Account) and hit targets at or above 44px.
 
 ## 9. File map
 
-| File | Lines | Role |
-| --- | --- | --- |
+| File                            | Lines  | Role                                                                           |
+| ------------------------------- | ------ | ------------------------------------------------------------------------------ |
 | `Mortgage Intelligence.dc.html` | ~6,460 | The entire UI: sign-in, dashboard, map, chat, lists, commercial canvas, mobile |
-| `support.js` | — | Design Component runtime (generated; do not edit) |
-| `commercial.js` | ~1,420 | Central application-state engine, client book, scenarios |
-| `commercial-flow.js` | ~870 | Question matrix, document catalogue, findings, gate, checks, progression |
-| `commercial-docs.js` | ~240 | Harbourview pack manifest, source map, extraction result, intentional gaps |
-| `commercial-products.js` | ~260 | Lender products, calculator, comparison, result vocabulary |
-| `data.js` | ~5,850 | Generated network data: branches, brokers, applications |
-| `emails.js` | ~1,610 | Generated email archive: 18 threads, 77 messages |
-| `query.js` | ~450 | Entity resolution and computed query answers |
-| `compliance.js` | ~580 | Residential email compliance rules and findings |
-| `documents.js` | ~190 | Julie Smith client-file document records |
-| `timeline.js` | ~125 | Residential pipeline and next-action guidance |
-| `lenders.js` | ~160 | Lender identity, logos, offices |
-| `access.js` | ~115 | Three identities and dataset scoping |
+| `support.js`                    | —      | Design Component runtime (generated; do not edit)                              |
+| `commercial.js`                 | ~1,420 | Central application-state engine, client book, scenarios                       |
+| `commercial-flow.js`            | ~870   | Question matrix, document catalogue, findings, gate, checks, progression       |
+| `commercial-docs.js`            | ~240   | Harbourview pack manifest, source map, extraction result, intentional gaps     |
+| `commercial-products.js`        | ~260   | Lender products, calculator, comparison, result vocabulary                     |
+| `data.js`                       | ~5,850 | Generated network data: branches, brokers, applications                        |
+| `emails.js`                     | ~1,610 | Generated email archive: 18 threads, 77 messages                               |
+| `query.js`                      | ~450   | Entity resolution and computed query answers                                   |
+| `compliance.js`                 | ~580   | Residential email compliance rules and findings                                |
+| `documents.js`                  | ~190   | Julie Smith client-file document records                                       |
+| `timeline.js`                   | ~125   | Residential pipeline and next-action guidance                                  |
+| `lenders.js`                    | ~160   | Lender identity, logos, offices                                                |
+| `access.js`                     | ~115   | Three identities and dataset scoping                                           |
 
 Static assets: `assets/` (logo, icons, file-type icons, lender marks),
 `files/julie-smith/` (residential client file), and

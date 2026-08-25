@@ -39,7 +39,8 @@ import {
 // Fixed vocabulary
 // ---------------------------------------------------------------------------
 
-export const REVIEW_BANNER = "Automated evidence review. Human assessment required.";
+export const REVIEW_BANNER =
+  "Automated evidence review. Human assessment required.";
 
 export const SOURCE_SCOPE =
   "Results are based on the email archive currently available. Relevant evidence may exist in other connected systems.";
@@ -60,20 +61,90 @@ const rule = (
 ): ReviewRule => ({ id, name, category, rg });
 
 export const RULES: Readonly<Record<string, ReviewRule>> = {
-  "RES-01": rule("RES-01", "Needs and objectives captured", "Evidence and record quality", ["RG 273.30–273.39", "RG 273.44–273.48"]),
-  "RES-02": rule("RES-02", "Financial circumstances and commitments", "Evidence and record quality", ["RG 273.30–273.43"]),
-  "RES-03": rule("RES-03", "Change in circumstances handled", "Changed circumstances", ["RG 273.37–273.43"]),
-  "RES-04": rule("RES-04", "Accurate and complete information", "Accuracy or concealment", ["RG 273.40–273.43", "RG 273.42"]),
-  "RES-05": rule("RES-05", "Individual product assessment", "Product comparison and recommendation", ["RG 273.16–273.20", "RG 273.44–273.86"]),
-  "RES-06": rule("RES-06", "Options and comparison", "Product comparison and recommendation", ["RG 273.20", "RG 273.87–273.104"]),
-  "RES-07": rule("RES-07", "Costs, risks and trade-offs explained", "Costs, risks and client understanding", ["RG 273.48", "RG 273.87–273.104"]),
-  "RES-08": rule("RES-08", "Informed instructions and authority", "Evidence and record quality", ["RG 273.33–273.34", "RG 273.162–273.172"]),
-  "RES-09": rule("RES-09", "Conflicts and consumer priority", "Conflicts and consumer priority", ["RG 273.144–273.161"]),
-  "RES-10": rule("RES-10", "Record and source quality", "Evidence and record quality", ["RG 273.21", "RG 273.162–273.172"]),
-  "RES-11": rule("RES-11", "Professional boundaries and referral", "Evidence and record quality", ["RG 273.142–273.143"]),
-  "RES-12": rule("RES-12", "Privacy and authorised disclosure", "Privacy and data handling", ["Privacy / internal policy"]),
-  "RES-13": rule("RES-13", "Pressure, assurances and client understanding", "Costs, risks and client understanding", ["RG 273.33", "RG 273.87–273.104"]),
-  "RES-14": rule("RES-14", "Heightened care for complex scenarios", "Costs, risks and client understanding", ["RG 273.39"]),
+  "RES-01": rule(
+    "RES-01",
+    "Needs and objectives captured",
+    "Evidence and record quality",
+    ["RG 273.30–273.39", "RG 273.44–273.48"],
+  ),
+  "RES-02": rule(
+    "RES-02",
+    "Financial circumstances and commitments",
+    "Evidence and record quality",
+    ["RG 273.30–273.43"],
+  ),
+  "RES-03": rule(
+    "RES-03",
+    "Change in circumstances handled",
+    "Changed circumstances",
+    ["RG 273.37–273.43"],
+  ),
+  "RES-04": rule(
+    "RES-04",
+    "Accurate and complete information",
+    "Accuracy or concealment",
+    ["RG 273.40–273.43", "RG 273.42"],
+  ),
+  "RES-05": rule(
+    "RES-05",
+    "Individual product assessment",
+    "Product comparison and recommendation",
+    ["RG 273.16–273.20", "RG 273.44–273.86"],
+  ),
+  "RES-06": rule(
+    "RES-06",
+    "Options and comparison",
+    "Product comparison and recommendation",
+    ["RG 273.20", "RG 273.87–273.104"],
+  ),
+  "RES-07": rule(
+    "RES-07",
+    "Costs, risks and trade-offs explained",
+    "Costs, risks and client understanding",
+    ["RG 273.48", "RG 273.87–273.104"],
+  ),
+  "RES-08": rule(
+    "RES-08",
+    "Informed instructions and authority",
+    "Evidence and record quality",
+    ["RG 273.33–273.34", "RG 273.162–273.172"],
+  ),
+  "RES-09": rule(
+    "RES-09",
+    "Conflicts and consumer priority",
+    "Conflicts and consumer priority",
+    ["RG 273.144–273.161"],
+  ),
+  "RES-10": rule(
+    "RES-10",
+    "Record and source quality",
+    "Evidence and record quality",
+    ["RG 273.21", "RG 273.162–273.172"],
+  ),
+  "RES-11": rule(
+    "RES-11",
+    "Professional boundaries and referral",
+    "Evidence and record quality",
+    ["RG 273.142–273.143"],
+  ),
+  "RES-12": rule(
+    "RES-12",
+    "Privacy and authorised disclosure",
+    "Privacy and data handling",
+    ["Privacy / internal policy"],
+  ),
+  "RES-13": rule(
+    "RES-13",
+    "Pressure, assurances and client understanding",
+    "Costs, risks and client understanding",
+    ["RG 273.33", "RG 273.87–273.104"],
+  ),
+  "RES-14": rule(
+    "RES-14",
+    "Heightened care for complex scenarios",
+    "Costs, risks and client understanding",
+    ["RG 273.39"],
+  ),
 };
 
 export const CATEGORIES: readonly string[] = [
@@ -208,9 +279,7 @@ const headlineFor = (
   return "No material concerns identified in analysed emails";
 };
 
-const highestSeverityOf = (
-  findings: readonly Finding[],
-): FindingSeverity =>
+const highestSeverityOf = (findings: readonly Finding[]): FindingSeverity =>
   [...FINDING_SEVERITY_ORDER]
     .reverse()
     .find((s) => findings.some((f) => f.severity === s)) ?? "INFORMATIONAL";
@@ -244,7 +313,9 @@ function buildFinding(
 
   const categories = [
     ...new Set(
-      raw.rules.map((r) => findRule(r)?.category).filter((c): c is string => !!c),
+      raw.rules
+        .map((r) => findRule(r)?.category)
+        .filter((c): c is string => !!c),
     ),
   ];
 
@@ -313,9 +384,11 @@ const REVIEWED: readonly ReviewedApplication[] = (() => {
         headline: headlineFor(entry.state, findings),
         highestSeverity: highestSeverityOf(findings),
         findings,
-        reviewCount: findings.filter((f) => f.status === "REQUIRES_REVIEW").length,
+        reviewCount: findings.filter((f) => f.status === "REQUIRES_REVIEW")
+          .length,
         gapCount: findings.filter((f) => f.status === "POTENTIAL_GAP").length,
-        evidenceCount: findings.filter((f) => f.status === "EVIDENCE_FOUND").length,
+        evidenceCount: findings.filter((f) => f.status === "EVIDENCE_FOUND")
+          .length,
         categories: [...new Set(findings.flatMap((f) => f.categories))],
         reviewCategories: [
           ...new Set(
@@ -408,7 +481,10 @@ export function networkCompliance(scope: DataScope): NetworkCompliance {
     ]),
   ) as Record<FindingSeverity, number>;
 
-  const tallies = new Map<string, { total: number; review: number; evidence: number }>();
+  const tallies = new Map<
+    string,
+    { total: number; review: number; evidence: number }
+  >();
   for (const finding of findings) {
     for (const ruleId of finding.rules) {
       const tally = tallies.get(ruleId) ?? { total: 0, review: 0, evidence: 0 };
@@ -424,7 +500,8 @@ export function networkCompliance(scope: DataScope): NetworkCompliance {
       ...new Set(
         findings
           .filter(
-            (f) => f.status === "REQUIRES_REVIEW" && f.categories.includes(category),
+            (f) =>
+              f.status === "REQUIRES_REVIEW" && f.categories.includes(category),
           )
           .map((f) => f.reference),
       ),
@@ -446,11 +523,17 @@ export function networkCompliance(scope: DataScope): NetworkCompliance {
     applications: applications.length,
     evidenceFound: findings.filter((f) => f.status === "EVIDENCE_FOUND").length,
     potentialGaps: findings.filter((f) => f.status === "POTENTIAL_GAP").length,
-    requiresReview: findings.filter((f) => f.status === "REQUIRES_REVIEW").length,
-    criticalApplications: applications.filter((a) => a.state === "CRITICAL_REVIEW").length,
-    highApplications: applications.filter((a) => a.state === "HIGH_REVIEW").length,
-    clearApplications: applications.filter((a) => a.state.startsWith("CLEAR")).length,
-    openConditionApplications: applications.filter((a) => a.openCondition).length,
+    requiresReview: findings.filter((f) => f.status === "REQUIRES_REVIEW")
+      .length,
+    criticalApplications: applications.filter(
+      (a) => a.state === "CRITICAL_REVIEW",
+    ).length,
+    highApplications: applications.filter((a) => a.state === "HIGH_REVIEW")
+      .length,
+    clearApplications: applications.filter((a) => a.state.startsWith("CLEAR"))
+      .length,
+    openConditionApplications: applications.filter((a) => a.openCondition)
+      .length,
     bySeverity,
     byRule: [...tallies.entries()]
       .map(([id, t]) => ({
@@ -540,11 +623,7 @@ export interface FindingGroup {
   readonly byStatus: Readonly<Partial<Record<AssessmentState, number>>>;
 }
 
-const matches = (
-  finding: Finding,
-  kind: GroupKind,
-  value: string,
-): boolean => {
+const matches = (finding: Finding, kind: GroupKind, value: string): boolean => {
   switch (kind) {
     case "severity":
       return finding.severity === value;

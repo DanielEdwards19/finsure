@@ -44,7 +44,8 @@ export function DashboardPanel({
       ? `at Finsure ${scope.branches[0]?.name ?? "your branch"}`
       : `across ${totals.branches} branches`;
 
-  const coverage = totals.coverage == null ? "" : ` · ${totals.coverage}% coverage`;
+  const coverage =
+    totals.coverage == null ? "" : ` · ${totals.coverage}% coverage`;
 
   const kpis = [
     {

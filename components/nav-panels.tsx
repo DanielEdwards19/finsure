@@ -102,11 +102,11 @@ export function HistoryPanel({
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <PanelHeader title="History" sub="Your saved conversations." />
-      <div className="scrollbar-thin flex flex-1 flex-col gap-2.5 overflow-auto px-5 pb-3">
+      <div className="flex scrollbar-thin flex-1 flex-col gap-2.5 overflow-auto px-5 pb-3">
         {conversations.length === 0 ? (
           <p className="m-0 px-0.5 py-2 text-[13px] leading-[1.6] text-secondary">
-            No conversations yet. Ask a question or tap a card on the home screen
-            to start one — it will be saved here.
+            No conversations yet. Ask a question or tap a card on the home
+            screen to start one — it will be saved here.
           </p>
         ) : (
           conversations.map((conversation) => (
@@ -152,7 +152,7 @@ export function HelpPanel() {
         title="Help"
         sub="Getting the most from Mortgage Intelligence."
       />
-      <div className="scrollbar-thin flex flex-1 flex-col gap-2.5 overflow-auto px-5 pb-3">
+      <div className="flex scrollbar-thin flex-1 flex-col gap-2.5 overflow-auto px-5 pb-3">
         {HELP.map((item) => (
           <NavCard key={item.title} {...item} />
         ))}
@@ -178,7 +178,7 @@ export function NewsPanel() {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <PanelHeader title="News" sub="Network updates and releases." />
-      <div className="scrollbar-thin flex flex-1 flex-col gap-2.5 overflow-auto px-5 pb-3">
+      <div className="flex scrollbar-thin flex-1 flex-col gap-2.5 overflow-auto px-5 pb-3">
         {NEWS.map((item) => (
           <NavCard key={item.title} {...item} />
         ))}
@@ -211,7 +211,7 @@ export function AccountPanel({
         title="Account"
         sub="Profile, billing and workspace settings."
       />
-      <div className="scrollbar-thin flex flex-1 flex-col overflow-auto px-[22px] pb-3">
+      <div className="flex scrollbar-thin flex-1 flex-col overflow-auto px-[22px] pb-3">
         <div className="mb-[18px] flex items-center gap-3">
           <span className="flex size-11 flex-none items-center justify-center rounded-full bg-surface text-sm font-semibold">
             {identity.initials}
@@ -377,7 +377,9 @@ function itemsFor(panel: NavPanel, scope: DataScope): readonly ListItem[] {
 
   const applications =
     panel === "alerts"
-      ? scope.applications.filter((a) => severityOfStatus(a.status) === "attention")
+      ? scope.applications.filter(
+          (a) => severityOfStatus(a.status) === "attention",
+        )
       : scope.applications;
 
   return applications.map((application) => {
@@ -391,10 +393,10 @@ function itemsFor(panel: NavPanel, scope: DataScope): readonly ListItem[] {
         panel === "alerts"
           ? `${application.status} · ${application.brokerName} · Finsure ${application.branchName}`
           : `${application.type} · ${money(application.amount)} · ${application.lender} · ${application.stage} · ${application.brokerName}`,
-      badge: outstanding
-        ? `${outstanding} to review`
-        : application.status,
-      tone: outstanding ? "bad" : severityTone(severityOfStatus(application.status)),
+      badge: outstanding ? `${outstanding} to review` : application.status,
+      tone: outstanding
+        ? "bad"
+        : severityTone(severityOfStatus(application.status)),
       search: [
         application.customer,
         application.brokerName,
@@ -463,7 +465,7 @@ export function ListPanel({
         )}
       </div>
 
-      <div className="scrollbar-thin flex flex-1 flex-col gap-2 overflow-auto px-5 pt-1 pb-3">
+      <div className="flex scrollbar-thin flex-1 flex-col gap-2 overflow-auto px-5 pt-1 pb-3">
         {matches.length === 0 ? (
           <p className="m-0 rounded-[14px] border border-hairline bg-inset p-4 text-[13px] leading-[1.5] text-secondary">
             No matches. Try a different name, branch or lender — or ask below.

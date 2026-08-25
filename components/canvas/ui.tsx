@@ -46,7 +46,7 @@ export function Field({
   return (
     <Card>
       <span className="text-base leading-[19px] font-medium">{label}</span>
-      <span className="min-w-0 text-base leading-[19px] font-medium text-secondary [overflow-wrap:anywhere]">
+      <span className="min-w-0 text-base leading-[19px] font-medium [overflow-wrap:anywhere] text-secondary">
         {children}
       </span>
     </Card>

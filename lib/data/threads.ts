@@ -67,9 +67,8 @@ const threadsByReference: ReadonlyMap<FileReference, readonly Thread[]> =
 export const findThread = (id: ThreadId): Thread | undefined =>
   threadsById.get(id);
 
-export const threadsForApplication = (
-  id: ApplicationId,
-): readonly Thread[] => threadsByApplication.get(id) ?? [];
+export const threadsForApplication = (id: ApplicationId): readonly Thread[] =>
+  threadsByApplication.get(id) ?? [];
 
 export const threadsForReference = (
   reference: FileReference,

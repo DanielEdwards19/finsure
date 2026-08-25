@@ -38,15 +38,11 @@ export interface AnalysisOptions {
 // Lookups within a scope
 // ---------------------------------------------------------------------------
 
-export const brokerIn = (
-  scope: DataScope,
-  id: BrokerId,
-): Broker | undefined => scope.brokers.find((b) => b.id === id);
+export const brokerIn = (scope: DataScope, id: BrokerId): Broker | undefined =>
+  scope.brokers.find((b) => b.id === id);
 
-export const branchIn = (
-  scope: DataScope,
-  id: BranchId,
-): Branch | undefined => scope.branches.find((b) => b.id === id);
+export const branchIn = (scope: DataScope, id: BranchId): Branch | undefined =>
+  scope.branches.find((b) => b.id === id);
 
 export const applicationIn = (
   scope: DataScope,
@@ -56,12 +52,14 @@ export const applicationIn = (
 export const applicationsForBroker = (
   scope: DataScope,
   id: BrokerId,
-): readonly Application[] => scope.applications.filter((a) => a.brokerId === id);
+): readonly Application[] =>
+  scope.applications.filter((a) => a.brokerId === id);
 
 export const applicationsForBranch = (
   scope: DataScope,
   id: BranchId,
-): readonly Application[] => scope.applications.filter((a) => a.branchId === id);
+): readonly Application[] =>
+  scope.applications.filter((a) => a.branchId === id);
 
 export const brokersForBranch = (
   scope: DataScope,
@@ -215,11 +213,46 @@ export const applicationTypesIn = (scope: DataScope): readonly string[] =>
  * Thompson application" resolves on "thompson" alone.
  */
 const STOP_WORDS = new Set([
-  "the", "and", "for", "with", "what", "who", "how", "many", "show", "tell",
-  "give", "about", "all", "any", "are", "was", "has", "have", "did", "does",
-  "from", "file", "files", "client", "customer", "application", "applications",
-  "me", "my", "our", "their", "list", "details", "detail", "status", "email",
-  "emails", "last", "most", "recent",
+  "the",
+  "and",
+  "for",
+  "with",
+  "what",
+  "who",
+  "how",
+  "many",
+  "show",
+  "tell",
+  "give",
+  "about",
+  "all",
+  "any",
+  "are",
+  "was",
+  "has",
+  "have",
+  "did",
+  "does",
+  "from",
+  "file",
+  "files",
+  "client",
+  "customer",
+  "application",
+  "applications",
+  "me",
+  "my",
+  "our",
+  "their",
+  "list",
+  "details",
+  "detail",
+  "status",
+  "email",
+  "emails",
+  "last",
+  "most",
+  "recent",
 ]);
 
 export interface Match<T> {
@@ -266,7 +299,10 @@ const rank = <T>(
   tokens: readonly string[],
 ): readonly Match<T>[] =>
   records
-    .map((record) => ({ record, score: scoreName(nameOf(record), query, tokens) }))
+    .map((record) => ({
+      record,
+      score: scoreName(nameOf(record), query, tokens),
+    }))
     .filter((m) => m.score > 0)
     .sort((a, b) => b.score - a.score);
 

@@ -72,7 +72,7 @@ export function CommercialPanel({
 
       <div
         ref={scroller}
-        className="scrollbar-thin flex min-h-[110px] flex-1 flex-col gap-[18px] overflow-auto px-[22px] pt-1.5 pb-2"
+        className="flex min-h-[110px] scrollbar-thin flex-1 flex-col gap-[18px] overflow-auto px-[22px] pt-1.5 pb-2"
       >
         {state.chat.map((message, index) =>
           message.role === "user" ? (
@@ -198,7 +198,9 @@ function QuestionForm({
   const promptedFields = useMemo(
     () => [
       ...(question.fields ?? []),
-      ...chosen.flatMap((o) => (o.fieldsRequired ? (question.fields ?? []) : [])),
+      ...chosen.flatMap((o) =>
+        o.fieldsRequired ? (question.fields ?? []) : [],
+      ),
     ],
     [question.fields, chosen],
   );
@@ -374,13 +376,13 @@ function DocumentIntake({ commercial }: { commercial: Commercial }) {
     return (
       <div className="flex flex-col gap-2.5 border-t border-white/6 pt-3">
         <span className="text-sm leading-[21px]">
-          I can read the supporting documents and fill in what they cover, so you
-          are not asked for it twice. Nothing read from a document is treated as
-          confirmed until you check it.
+          I can read the supporting documents and fill in what they cover, so
+          you are not asked for it twice. Nothing read from a document is
+          treated as confirmed until you check it.
         </span>
 
         {state.attachments.length > 0 && (
-          <div className="scrollbar-thin flex max-h-64 flex-col gap-1.5 overflow-auto">
+          <div className="flex max-h-64 scrollbar-thin flex-col gap-1.5 overflow-auto">
             {state.attachments.map((id) => {
               const document = findPackDocument(id);
               if (!document) return null;
@@ -548,7 +550,9 @@ function ExtractedRow({
       )}
 
       {row.note && (
-        <span className="text-xs leading-[18px] text-secondary">{row.note}</span>
+        <span className="text-xs leading-[18px] text-secondary">
+          {row.note}
+        </span>
       )}
 
       <button
@@ -582,7 +586,9 @@ function ExtractedRow({
           <span className="flex flex-wrap gap-1.5">
             <button
               type="button"
-              onClick={() => dispatch({ type: "confirmExtracted", key: row.key })}
+              onClick={() =>
+                dispatch({ type: "confirmExtracted", key: row.key })
+              }
               className="cursor-pointer rounded-lg border-0 bg-white px-2.5 py-[7px] text-meta font-semibold text-surface"
             >
               Confirm

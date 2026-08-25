@@ -42,7 +42,10 @@ describe("observations", () => {
     for (const thread of THREADS) {
       for (const observation of observationsFor(thread)) {
         const message = thread.messages[observation.messageIndex];
-        expect(message, `${thread.id} #${observation.messageIndex}`).toBeDefined();
+        expect(
+          message,
+          `${thread.id} #${observation.messageIndex}`,
+        ).toBeDefined();
         expect(observation.from).toBe(message.from);
         expect(observation.date).toBe(message.date);
         expect(observation.threadId).toBe(thread.id);
@@ -143,9 +146,9 @@ describe("scoping", () => {
       (a) => !broker.canSeeApplication(a.id),
     );
     expect(outside).toBeDefined();
-    expect(threadsInScope(broker).some((t) => t.applicationId === outside!.id)).toBe(
-      false,
-    );
+    expect(
+      threadsInScope(broker).some((t) => t.applicationId === outside!.id),
+    ).toBe(false);
   });
 });
 

@@ -242,7 +242,10 @@ function Calculator({
           <select
             value={draft.repaymentType}
             onChange={(e) =>
-              set("repaymentType", e.target.value as CalculatorInputs["repaymentType"])
+              set(
+                "repaymentType",
+                e.target.value as CalculatorInputs["repaymentType"],
+              )
             }
             className="rounded-[10px] border-0 bg-white/6 px-3 py-2.5 text-[13px] shadow-[inset_0_0_0_1px_var(--color-hairline)]"
           >
@@ -283,7 +286,9 @@ function NumberInput({
       <input
         value={String(value)}
         inputMode="numeric"
-        onChange={(e) => onChange(Number(e.target.value.replace(/[^0-9.]/g, "")) || 0)}
+        onChange={(e) =>
+          onChange(Number(e.target.value.replace(/[^0-9.]/g, "")) || 0)
+        }
         className="rounded-[10px] border-0 bg-white/6 px-3 py-2.5 text-[13px] shadow-[inset_0_0_0_1px_var(--color-hairline)]"
       />
     </label>
@@ -423,10 +428,16 @@ function ProductRow({
           <Detail label="Security" value={product.features.security} />
           <Detail label="Rate types" value={product.features.rateTypes} />
           <Detail label="Repayment" value={product.features.repayment} />
-          <Detail label="Extra repayments" value={product.features.extraRepayments} />
+          <Detail
+            label="Extra repayments"
+            value={product.features.extraRepayments}
+          />
           <Detail label="Maximum term" value={product.features.maxTerm} />
           <Detail label="LVR" value={product.features.lvr} />
-          <Detail label="Trading history" value={product.features.tradingHistory} />
+          <Detail
+            label="Trading history"
+            value={product.features.tradingHistory}
+          />
           <Detail label="Guarantees" value={product.guarantees} />
           <Detail label="Covenants" value={product.covenants} />
           <Detail label="Flexibility" value={product.flexibility} />
@@ -631,7 +642,8 @@ function RecommendationSection({ commercial }: { commercial: Commercial }) {
                   key={`${previous.productId}-${index}`}
                   className="rounded-card bg-white/4 px-3.5 py-2.5 text-xs leading-[18px] text-secondary"
                 >
-                  {findProduct(previous.productId)?.lender} — {previous.rationale}
+                  {findProduct(previous.productId)?.lender} —{" "}
+                  {previous.rationale}
                 </span>
               ))}
             </span>
@@ -648,15 +660,14 @@ function RecommendationSection({ commercial }: { commercial: Commercial }) {
                   {state.choice.recordedAt}
                 </span>
                 <span className="text-xs leading-[18px] text-secondary">
-                  Discussed via {state.choice.discussedVia}.{" "}
-                  {state.choice.note}
+                  Discussed via {state.choice.discussedVia}. {state.choice.note}
                 </span>
               </span>
             ) : (
               <span className="flex flex-col gap-2">
                 <span className="text-[13px] leading-[19px] text-secondary">
-                  The client&rsquo;s decision is recorded only when they have made
-                  one. It is never inferred from the recommendation.
+                  The client&rsquo;s decision is recorded only when they have
+                  made one. It is never inferred from the recommendation.
                 </span>
                 <select
                   value={via}

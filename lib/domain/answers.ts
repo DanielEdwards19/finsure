@@ -110,9 +110,7 @@ const appLine = (a: Application) =>
  * Two people with the same name are a real case in a network this size, so the
  * ambiguity is surfaced as a choice rather than resolved by guessing.
  */
-export function customerAnswer(
-  applications: readonly Application[],
-): Answer {
+export function customerAnswer(applications: readonly Application[]): Answer {
   const distinct: Application[] = [];
   const seen = new Set<string>();
   for (const a of applications) {

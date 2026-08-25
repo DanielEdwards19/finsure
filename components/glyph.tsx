@@ -33,7 +33,11 @@ export function Glyph({
 }
 
 /** The back chevron, at the size the design uses everywhere it appears. */
-export function BackGlyph({ className = "bg-primary" }: { className?: string }) {
+export function BackGlyph({
+  className = "bg-primary",
+}: {
+  className?: string;
+}) {
   return (
     <Glyph
       src="/assets/ic-back.svg"

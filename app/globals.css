@@ -5,8 +5,9 @@
  * source of truth for the visual system: change it there first.
  */
 @theme {
-  --font-sans: var(--font-inter), -apple-system, system-ui, "Segoe UI", Roboto,
-    Helvetica, Arial, sans-serif;
+  --font-sans:
+    var(--font-inter), -apple-system, system-ui, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
 
   /* Surfaces */
   --color-surface: rgb(1 28 34);

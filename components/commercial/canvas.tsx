@@ -5,7 +5,10 @@ import { useState } from "react";
 import { canvasSections } from "@/lib/domain/commercial/sections";
 import { SECTIONS } from "@/lib/domain/commercial/flow";
 import { money } from "@/lib/format";
-import type { CanvasSection, SectionRow } from "@/lib/domain/commercial/sections";
+import type {
+  CanvasSection,
+  SectionRow,
+} from "@/lib/domain/commercial/sections";
 import type { Commercial } from "@/lib/use-commercial";
 import { Card, Caveat, Pill } from "../canvas/ui";
 import { ComparisonSection } from "./comparison";
@@ -38,10 +41,12 @@ export function CommercialCanvas({
   } = commercial;
 
   const sections = canvasSections(state);
-  const client = String(fields.tradingName ?? fields.legalName ?? "Not yet recorded");
+  const client = String(
+    fields.tradingName ?? fields.legalName ?? "Not yet recorded",
+  );
 
   return (
-    <div className="flex w-full flex-col gap-4 animate-in">
+    <div className="animate-in flex w-full flex-col gap-4">
       <Card className="gap-[18px] px-[26px] py-6">
         <div className="flex flex-wrap items-center gap-4">
           <span className="text-[22px] leading-[1.15] font-medium">
@@ -66,7 +71,9 @@ export function CommercialCanvas({
           <Fact
             label="REQUESTED"
             value={
-              fields.loanAmount ? money(Number(fields.loanAmount)) : "Not yet recorded"
+              fields.loanAmount
+                ? money(Number(fields.loanAmount))
+                : "Not yet recorded"
             }
           />
           <Fact
@@ -212,8 +219,8 @@ export function CommercialCanvas({
           </div>
         )}
         <Caveat>
-          Each item describes what requires review. None is a determination about
-          the application.
+          Each item describes what requires review. None is a determination
+          about the application.
         </Caveat>
       </Card>
 
@@ -356,8 +363,8 @@ function SectionCard({
       {section.hidden > 0 && (
         <span className="text-meta text-tertiary">
           {section.hidden} further field
-          {section.hidden === 1 ? "" : "s"} appear once the questions behind them
-          are answered.
+          {section.hidden === 1 ? "" : "s"} appear once the questions behind
+          them are answered.
         </span>
       )}
     </Card>
@@ -412,7 +419,7 @@ function Row({ row, commercial }: { row: SectionRow; commercial: Commercial }) {
             </button>
           </span>
         ) : (
-          <span className="text-sm leading-5 font-medium whitespace-pre-line [overflow-wrap:anywhere]">
+          <span className="text-sm leading-5 font-medium [overflow-wrap:anywhere] whitespace-pre-line">
             {row.value}
           </span>
         )}
@@ -540,7 +547,10 @@ function FindingRow({
           </button>
         </span>
       ) : (
-        <RowButton label="Record how this was addressed" onClick={() => setOpen(true)} />
+        <RowButton
+          label="Record how this was addressed"
+          onClick={() => setOpen(true)}
+        />
       )}
     </div>
   );

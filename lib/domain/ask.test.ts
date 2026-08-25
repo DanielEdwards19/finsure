@@ -9,7 +9,10 @@ const broker = scopeFor(userId("USER-BR-001"));
 
 describe("ask", () => {
   it("routes network compliance questions to the compliance canvas", () => {
-    const answer = ask(organisation, "Summarise the compliance review across the network");
+    const answer = ask(
+      organisation,
+      "Summarise the compliance review across the network",
+    );
     expect(answer.view).toEqual({ kind: "compliance" });
     expect(answer.intro).toContain("review rules");
   });
@@ -20,7 +23,10 @@ describe("ask", () => {
   });
 
   it("routes an attention question to the branches needing it", () => {
-    const answer = ask(organisation, "Which branches need attention right now?");
+    const answer = ask(
+      organisation,
+      "Which branches need attention right now?",
+    );
     expect(answer.view).toEqual({ kind: "networkReport" });
     expect(answer.intro).toContain("require attention");
   });
@@ -32,7 +38,10 @@ describe("ask", () => {
   });
 
   it("reads a client name with compliance wording as that file's findings", () => {
-    const answer = ask(organisation, "What are the compliance findings for Julie Smith?");
+    const answer = ask(
+      organisation,
+      "What are the compliance findings for Julie Smith?",
+    );
     expect(answer.view?.kind).toBe("application");
     expect(answer.findings?.length ?? 0).toBeGreaterThan(0);
   });
@@ -86,7 +95,10 @@ describe("ask", () => {
       "asdfghjkl",
     ];
     for (const question of questions) {
-      expect(ask(organisation, question).intro.length, question).toBeGreaterThan(0);
+      expect(
+        ask(organisation, question).intro.length,
+        question,
+      ).toBeGreaterThan(0);
     }
   });
 });

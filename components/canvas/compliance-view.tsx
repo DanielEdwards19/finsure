@@ -127,7 +127,7 @@ export function ComplianceView({
                 <Pill>{application.reference}</Pill>
               </span>
 
-              <span className="text-sm leading-5 text-secondary [overflow-wrap:anywhere]">
+              <span className="text-sm leading-5 [overflow-wrap:anywhere] text-secondary">
                 {application.headline}
               </span>
 
@@ -138,8 +138,8 @@ export function ComplianceView({
 
               <span className="text-secondary-sm text-secondary">
                 {application.evidenceCount} evidence found ·{" "}
-                {application.gapCount} potential gaps · {application.reviewCount}{" "}
-                requiring review
+                {application.gapCount} potential gaps ·{" "}
+                {application.reviewCount} requiring review
               </span>
 
               <div className="mt-1.5 flex flex-col gap-2.5">
@@ -235,7 +235,7 @@ function FindingRow({
             {finding.rgRefs.length > 0 && ` · ${finding.rgRefs.join(", ")}`}
           </span>
 
-          <span className="text-sm leading-5 text-secondary [overflow-wrap:anywhere]">
+          <span className="text-sm leading-5 [overflow-wrap:anywhere] text-secondary">
             {finding.explanation}
           </span>
 
@@ -259,8 +259,8 @@ function FindingRow({
                 >
                   “{evidence.anchor}”
                   <span className="mt-1.5 block text-meta text-secondary">
-                    {evidence.message.from} · {evidence.message.short} — open the
-                    thread
+                    {evidence.message.from} · {evidence.message.short} — open
+                    the thread
                   </span>
                 </button>
               ))}
