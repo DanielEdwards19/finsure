@@ -1,0 +1,48 @@
+MORTGAGE INTELLIGENCE - EXPECTED FINDINGS FOR FIN-DEMO-0002
+FICTIONAL PROTOTYPE LOGIC - NOT A LEGAL OR COMPLIANCE DETERMINATION
+
+APPLICATION STATE
+No material concern identified in the analysed record. One lender
+condition remains open and requires human review.
+
+1. EVIDENCE FOUND - Information gathering and objectives
+   - Needs and objectives record captures purpose, requested amount,
+     repayment preferences, offset requirement, flexibility and timing.
+   - Cite: 03_Needs_and_Objectives_Assessment.docx
+
+2. EVIDENCE FOUND - Alternatives and recommendation reasoning
+   - Westpac, ANZ and Macquarie options are compared.
+   - Westpac is not presented as automatically best or cheapest.
+   - Cite: 07_Credit_Proposal_and_Product_Comparison.pdf
+
+3. EVIDENCE FOUND - Employment and income verification
+   - Application, payslips, salary credits and employer confirmation
+     were recorded as consistent when reviewed.
+   - Cite: 05_Employment_Verification_Record.docx
+
+4. EVIDENCE FOUND - Contract question referred appropriately
+   - Rachel declined to provide a potentially incorrect cooling-off
+     deadline and referred Julie to her conveyancer.
+   - Cite: 15_Julie_Smith_Email_Thread_Extract.txt and
+     12_Contract_of_Sale_Extract_PROTOTYPE.pdf
+
+5. EVIDENCE FOUND - Privacy-aware document handling
+   - Rachel used the secure broker portal and asked Julie not to email
+     further unredacted bank statements.
+   - Cite: 15_Julie_Smith_Email_Thread_Extract.txt
+
+6. REQUIRES REVIEW - Source of settlement funds
+   - A $25,000 credit appears in the account on 28 May.
+   - The source, purpose and whether it is repayable are not established.
+   - The unsigned declaration is not evidence that the condition is met.
+   - Cite: 10_Julie_Smith_NAB_Offset_Statement_PROTOTYPE.pdf and
+     11_Source_of_Funds_Declaration_UNSIGNED.pdf
+   - Suggested action: obtain and assess source evidence, update the
+     application accurately and satisfy current lender requirements.
+
+FRONTEND GUARDRAILS
+- Use Evidence found, Potential gap and Requires review.
+- Do not declare compliant / non-compliant.
+- Do not infer that the $25,000 was a gift merely from the sender label.
+- Keep legal and finance conditions distinct.
+- Link each finding to the precise source passage.

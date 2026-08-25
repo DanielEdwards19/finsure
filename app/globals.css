@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens transcribed from docs/DESIGN.md §7. That document is the
+ * source of truth for the visual system: change it there first.
+ */
+@theme {
+  --font-sans: var(--font-inter), -apple-system, system-ui, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+
+  /* Surfaces */
+  --color-surface: rgb(1 28 34);
+  --color-inset: rgb(7 8 9);
+  --color-hairline: rgb(43 45 49);
+  --color-glass: rgb(0 20 25 / 0.9);
+
+  /* Text */
+  --color-primary: rgb(255 255 255);
+  --color-secondary: rgb(160 162 166);
+  --color-tertiary: rgb(130 130 130);
+  --color-accent: rgb(255 153 0);
+  --color-link: rgb(143 176 255);
+  --color-link-hover: rgb(181 202 255);
+
+  /* Status tones: each is a fill plus a text colour, never used apart */
+  --color-good-fill: rgb(120 255 190 / 0.14);
+  --color-good-text: rgb(190 255 225);
+  --color-warn-fill: rgb(255 153 0 / 0.16);
+  --color-warn-text: rgb(255 214 150);
+  --color-bad-fill: rgb(255 120 110 / 0.16);
+  --color-bad-text: rgb(255 190 185);
+  --color-muted-fill: rgb(255 255 255 / 0.06);
+  --color-muted-text: rgb(160 162 166);
+
+  /* Type scale — Inter 400/500/600 only */
+  --text-display: 32px;
+  --text-page-title: 28px;
+  --text-section: 17px;
+  --text-body: 15px;
+  --text-secondary: 13px;
+  --text-secondary-sm: 12.5px;
+  --text-meta: 11.5px;
+  --text-label: 11px;
+
+  /* Shape */
+  --radius-panel: 18px;
+  --radius-card: 12px;
+  --radius-tile: 8px;
+  --radius-pill: 999px;
+
+  /* Motion — the only three keyframes in the system */
+  --animate-rise: rise 0.35s ease;
+  --animate-spin-slow: spin-slow 0.8s linear infinite;
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0.35;
+  }
+}
+
+/*
+ * Gradients are multi-stop and referenced by name rather than as utilities,
+ * so they live as custom properties outside @theme.
+ */
+:root {
+  --gradient-page: linear-gradient(180deg, #002d37 0%, #004e5f 100%);
+  --gradient-sign-in: linear-gradient(
+    163.884deg,
+    rgb(1, 29, 34) 13.74%,
+    rgb(0, 16, 19) 98.76%
+  );
+}
+
+@layer base {
+  html,
+  body {
+    margin: 0;
+    background: var(--gradient-page);
+    color: var(--color-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  a {
+    color: var(--color-link);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--color-link-hover);
+  }
+
+  button {
+    font-family: inherit;
+  }
+
+  ::selection {
+    background: rgb(255 153 0 / 0.35);
+  }
+
+  input::placeholder {
+    color: var(--color-tertiary);
+  }
+
+  /*
+   * The prototype had no focus styling at all. Every interactive element gets a
+   * visible keyboard affordance here so it cannot be omitted per-component.
+   */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+@utility scrollbar-thin {
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgb(255 255 255 / 0.12);
+    border-radius: 4px;
+  }
+}

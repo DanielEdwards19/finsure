@@ -1,0 +1,157 @@
+{
+  "applicationId": "COM-DEMO-0001",
+  "client": "Harbourview Allied Health Pty Ltd",
+  "prototypeOnly": true,
+  "documents": [
+    {
+      "documentId": "DOC-001",
+      "filename": "01_ASIC_Current_Company_Extract_PROTOTYPE.pdf",
+      "displayName": "01 ASIC Current Company Extract",
+      "mimeType": "application/pdf",
+      "openable": true,
+      "attachmentState": "available",
+      "extractedFields": [
+        "legalEntityName",
+        "abn",
+        "entityType",
+        "directors",
+        "tradingName"
+      ]
+    },
+    {
+      "documentId": "DOC-002",
+      "filename": "02_FY2025_FY2026_Company_Financial_Statements_PROTOTYPE.pdf",
+      "displayName": "02 FY2025 FY2026 Company Financial Statements",
+      "mimeType": "application/pdf",
+      "openable": true,
+      "attachmentState": "available",
+      "extractedFields": [
+        "fy2025Revenue",
+        "fy2026Revenue",
+        "normalisedEbitda",
+        "cashAtBank",
+        "equipmentFinance"
+      ]
+    },
+    {
+      "documentId": "DOC-003",
+      "filename": "03_FY2025_Company_Tax_Return_PROTOTYPE.pdf",
+      "displayName": "03 FY2025 Company Tax Return",
+      "mimeType": "application/pdf",
+      "openable": true,
+      "attachmentState": "available",
+      "extractedFields": [
+        "fy2025TaxableIncome",
+        "fy2025TaxStatus"
+      ]
+    },
+    {
+      "documentId": "DOC-004",
+      "filename": "04_YTD_Management_Accounts_31_July_2026_PROTOTYPE.pdf",
+      "displayName": "04 YTD Management Accounts 31 July 2026",
+      "mimeType": "application/pdf",
+      "openable": true,
+      "attachmentState": "available",
+      "extractedFields": [
+        "ytdRevenue",
+        "ytdEbitda",
+        "currentCash"
+      ]
+    },
+    {
+      "documentId": "DOC-005",
+      "filename": "05_Six_Month_Business_Bank_Statements_PROTOTYPE.pdf",
+      "displayName": "05 Six Month Business Bank Statements",
+      "mimeType": "application/pdf",
+      "openable": true,
+      "attachmentState": "available",
+      "extractedFields": [
+        "operatingAccount",
+        "sixMonthCashFlow",
+        "currentCash"
+      ]
+    },
+    {
+      "documentId": "DOC-006",
+      "filename": "06_Current_Business_Debt_Schedule_PROTOTYPE.docx",
+      "displayName": "06 Current Business Debt Schedule",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "openable": true,
+      "attachmentState": "available",
+      "extractedFields": [
+        "existingDebtBalance",
+        "existingAnnualDebtCommitments"
+      ]
+    },
+    {
+      "documentId": "DOC-007",
+      "filename": "07_Contract_of_Sale_18_Riverstone_Road_PROTOTYPE.pdf",
+      "displayName": "07 Contract of Sale 18 Riverstone Road",
+      "mimeType": "application/pdf",
+      "openable": true,
+      "attachmentState": "available",
+      "extractedFields": [
+        "purchasePrice",
+        "propertyAddress",
+        "settlementDate",
+        "financeDate"
+      ]
+    },
+    {
+      "documentId": "DOC-008",
+      "filename": "08_Deposit_Receipt_PROTOTYPE.pdf",
+      "displayName": "08 Deposit Receipt",
+      "mimeType": "application/pdf",
+      "openable": true,
+      "attachmentState": "available",
+      "extractedFields": [
+        "depositAmount",
+        "depositDate"
+      ]
+    },
+    {
+      "documentId": "DOC-009",
+      "filename": "09_Directors_Personal_Assets_and_Liabilities_PROTOTYPE.docx",
+      "displayName": "09 Directors Personal Assets and Liabilities",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "openable": true,
+      "attachmentState": "available",
+      "extractedFields": [
+        "directorAssets",
+        "directorLiabilities"
+      ]
+    },
+    {
+      "documentId": "DOC-010",
+      "filename": "10_Director_Identification_Register_PROTOTYPE.pdf",
+      "displayName": "10 Director Identification Register",
+      "mimeType": "application/pdf",
+      "openable": true,
+      "attachmentState": "available",
+      "extractedFields": [
+        "identityEvidence"
+      ]
+    },
+    {
+      "documentId": "DOC-011",
+      "filename": "11_Draft_Property_Occupancy_Plan_PROTOTYPE.pdf",
+      "displayName": "11 Draft Property Occupancy Plan",
+      "mimeType": "application/pdf",
+      "openable": true,
+      "attachmentState": "available",
+      "extractedFields": [
+        "ownerOccupancyPercent",
+        "thirdPartyOccupancyPercent",
+        "proposedTenant"
+      ]
+    }
+  ],
+  "intentionallyMissing": [
+    "FY2026 company tax return",
+    "Latest ATO integrated client account statement",
+    "Formal property valuation",
+    "Evidence of full client contribution",
+    "Radiology lease or heads of agreement",
+    "Privacy and information-sharing consent"
+  ]
+}

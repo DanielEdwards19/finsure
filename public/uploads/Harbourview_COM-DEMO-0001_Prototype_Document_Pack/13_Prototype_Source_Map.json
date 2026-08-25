@@ -1,0 +1,101 @@
+{
+  "applicationId": "COM-DEMO-0001",
+  "fields": {
+    "legalEntityName": {
+      "value": "Harbourview Allied Health Pty Ltd",
+      "source": "DOC-001",
+      "page": 1,
+      "section": "Company details",
+      "confidence": "high",
+      "reviewStatus": "needs_broker_confirmation"
+    },
+    "abn": {
+      "value": "51 234 567 890",
+      "source": "DOC-001",
+      "page": 1,
+      "section": "Company details",
+      "confidence": "high",
+      "reviewStatus": "needs_broker_confirmation"
+    },
+    "fy2026Revenue": {
+      "value": 2420000,
+      "source": "DOC-002",
+      "page": 1,
+      "section": "Statement of profit or loss",
+      "confidence": "high",
+      "reviewStatus": "needs_broker_confirmation"
+    },
+    "normalisedEbitda": {
+      "value": 438000,
+      "source": "DOC-002",
+      "page": 1,
+      "section": "Statement of profit or loss",
+      "confidence": "medium",
+      "reviewStatus": "normalisation_evidence_required"
+    },
+    "existingAnnualDebtCommitments": {
+      "value": 48000,
+      "source": "DOC-006",
+      "page": 1,
+      "section": "Debt schedule",
+      "confidence": "high",
+      "crossCheckSources": [
+        "DOC-002",
+        "DOC-005"
+      ],
+      "reviewStatus": "needs_broker_confirmation"
+    },
+    "purchasePrice": {
+      "value": 1850000,
+      "source": "DOC-007",
+      "page": 1,
+      "section": "Key contract terms",
+      "confidence": "high",
+      "reviewStatus": "needs_broker_confirmation"
+    },
+    "propertyAddress": {
+      "value": "18 Riverstone Road, West End QLD 4101",
+      "source": "DOC-007",
+      "page": 1,
+      "section": "Key contract terms",
+      "confidence": "high",
+      "reviewStatus": "needs_broker_confirmation"
+    },
+    "settlementDate": {
+      "value": "2026-11-30",
+      "source": "DOC-007",
+      "page": 1,
+      "section": "Key contract terms",
+      "confidence": "high",
+      "reviewStatus": "needs_broker_confirmation"
+    },
+    "depositAmount": {
+      "value": 185000,
+      "source": "DOC-008",
+      "page": 1,
+      "section": "Deposit transaction",
+      "confidence": "high",
+      "reviewStatus": "confirmed_by_two_documents",
+      "crossCheckSources": [
+        "DOC-007"
+      ]
+    },
+    "thirdPartyOccupancyPercent": {
+      "value": 20,
+      "source": "DOC-011",
+      "page": 1,
+      "section": "Proposed occupancy",
+      "confidence": "medium",
+      "reviewStatus": "requires_review"
+    },
+    "proposedTenant": {
+      "value": "River City Radiology Pty Ltd",
+      "source": "DOC-011",
+      "page": 1,
+      "section": "Proposed occupancy",
+      "confidence": "medium",
+      "reviewStatus": "heads_of_agreement_missing"
+    }
+  },
+  "questionSuppressionRule": "Suppress a questionnaire question only when its field is current, consistent and broker-confirmed. Extracted values remain reviewable and source-linked."
+}

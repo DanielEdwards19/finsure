@@ -1,0 +1,17 @@
+field,value
+application_reference,FIN-DEMO-0002
+client_name,Julie Smith
+broker_name,Rachel Nguyen
+branch,Brisbane South
+application_type,Owner-occupied purchase
+purchase_price,780000
+requested_loan_amount,625000
+lender,Westpac
+product,Flexi First Option Home Loan - Variable with Offset
+stage,Conditional approval
+status,Conditions outstanding
+security_property,"18 Wattlebird Crescent, Southport QLD 4215"
+settlement_date,2026-07-03
+funds_to_complete,82000
+open_condition,"Evidence for $25,000 credit dated 28 May 2026"
+prototype_notice,FICTIONAL PROTOTYPE DATA - NOT A REAL CUSTOMER OR CREDIT APPLICATION

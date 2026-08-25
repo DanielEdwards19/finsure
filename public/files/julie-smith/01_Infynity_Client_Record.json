@@ -1,0 +1,118 @@
+{
+  "prototype_notice": "FICTIONAL PROTOTYPE DATA - NOT A REAL CUSTOMER OR CREDIT APPLICATION",
+  "application_reference": "FIN-DEMO-0002",
+  "client": {
+    "first_name": "Julie",
+    "last_name": "Smith",
+    "email": "julie.smith@client-demo.example",
+    "phone": "0400 000 000",
+    "date_of_birth": "1987-09-14",
+    "marital_status": "Single",
+    "dependants": 0,
+    "current_address": "Unit 6, 42 Jacaranda Avenue, Southport QLD 4215",
+    "residency_status": "Australian citizen"
+  },
+  "broker": {
+    "name": "Rachel Nguyen",
+    "email": "rachel.nguyen@finsure-demo.example",
+    "branch": "Brisbane South",
+    "aggregator": "Finsure",
+    "phone": "07 3000 0000"
+  },
+  "application": {
+    "type": "Owner-occupied purchase",
+    "purpose": "Purchase a principal place of residence",
+    "requested_loan_amount": 625000,
+    "purchase_price": 780000,
+    "estimated_lvr": 80.13,
+    "lender": "Westpac",
+    "product": "Flexi First Option Home Loan - Variable with Offset",
+    "repayment_type": "Principal and interest",
+    "term_years": 30,
+    "stage": "Conditional approval",
+    "status": "Conditions outstanding",
+    "security_property": "18 Wattlebird Crescent, Southport QLD 4215",
+    "contract_date": "2026-06-01",
+    "settlement_date": "2026-07-03",
+    "funds_to_complete": 82000
+  },
+  "employment": {
+    "employer": "Harbourlight Health Services Pty Ltd",
+    "role": "Senior Operations Manager",
+    "basis": "Permanent full-time",
+    "start_date": "2021-02-15",
+    "gross_annual_salary": 138000,
+    "verification_contact": "Megan Cole, People and Culture Manager",
+    "verification_date": "2026-05-25"
+  },
+  "financial_position": {
+    "cash_savings": 82500,
+    "superannuation": 126000,
+    "motor_vehicle": 28000,
+    "household_contents": 18000,
+    "credit_card_limit": 8000,
+    "credit_card_balance": 1150,
+    "car_loan_balance": 16800,
+    "student_loan_balance": 18500,
+    "monthly_living_expenses": 4150
+  },
+  "objectives": [
+    "Purchase the property as Julie's principal place of residence.",
+    "Keep repayments manageable if variable rates increase.",
+    "Use an offset account for salary and emergency savings.",
+    "Make additional repayments without penalty.",
+    "Avoid lender's mortgage insurance where reasonably achievable.",
+    "Settle by 3 July 2026, subject to finance and conveyancing requirements."
+  ],
+  "product_comparison": [
+    {
+      "lender": "Westpac",
+      "product": "Flexi First Option Home Loan - Variable with Offset",
+      "illustrative_rate": "6.14% p.a.",
+      "illustrative_comparison_rate": "6.27% p.a.",
+      "annual_package_fee": "$395",
+      "offset": "Yes",
+      "reason": "Preferred: full offset, policy fit at approximately 80% LVR and suitable settlement pathway."
+    },
+    {
+      "lender": "ANZ",
+      "product": "Standard Variable Home Loan with Offset",
+      "illustrative_rate": "6.09% p.a.",
+      "illustrative_comparison_rate": "6.31% p.a.",
+      "annual_package_fee": "$395",
+      "offset": "Yes",
+      "reason": "Competitive rate; slower indicative turnaround did not align as well with the contract timeline."
+    },
+    {
+      "lender": "Macquarie",
+      "product": "Offset Home Loan",
+      "illustrative_rate": "6.19% p.a.",
+      "illustrative_comparison_rate": "6.24% p.a.",
+      "annual_package_fee": "$248",
+      "offset": "Yes",
+      "reason": "Strong digital experience; servicing buffer was tighter using the verified expense position."
+    }
+  ],
+  "conditions": [
+    {
+      "condition": "Building insurance certificate",
+      "status": "Satisfied",
+      "date": "2026-06-04"
+    },
+    {
+      "condition": "Funds to complete verified",
+      "status": "Requires review",
+      "date": "2026-06-05"
+    },
+    {
+      "condition": "Evidence for $25,000 credit dated 28 May",
+      "status": "Outstanding",
+      "date": null
+    },
+    {
+      "condition": "Signed lender documents",
+      "status": "Pending lender issue",
+      "date": null
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  html,body{margin:0;height:100%;font-family:Inter,-apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#002D37 0%,#004E5F 100%)}
+  #map{position:absolute;inset:0;background:transparent}
+  .leaflet-container{background:transparent}
+  .leaflet-control-attribution{background:rgba(0,45,55,.6)!important;color:#8a8d93!important;font-size:9px!important}
+  .leaflet-control-attribution a{color:#a6b2b5!important}
+  .leaflet-bar{border:0!important;box-shadow:none!important}
+  .leaflet-bar a{background:rgba(0,45,55,.72)!important;color:#fff!important;border:1px solid rgba(255,255,255,.12)!important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);width:40px!important;height:40px!important;line-height:40px!important;font-size:20px!important;border-radius:12px!important;margin-bottom:10px!important}
+  .leaflet-bar a:hover{background:rgba(0,78,95,.85)!important}
+  .leaflet-control-zoom{margin:22px 0 0 22px!important}
+  .leaflet-tint-pane{background:linear-gradient(180deg,rgba(0,45,55,.42) 0%,rgba(0,78,95,.42) 100%);pointer-events:none}
+
+  /* ---- markers: circular, coloured by compliance status ---- */
+  .mk{position:relative;width:0;height:0;cursor:pointer}
+  .mk i{position:absolute;border-radius:50%;transform:translate(-50%,-50%);left:0;top:0;display:block}
+  .mk i.halo{width:34px;height:34px;opacity:.3;animation:pulse 2.4s ease-out infinite}
+  .mk i.mid{width:20px;height:20px;opacity:.55}
+  .mk i.core{width:13px;height:13px;border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.7)}
+  @keyframes pulse{0%{transform:translate(-50%,-50%) scale(.7);opacity:.45}70%{opacity:0}100%{transform:translate(-50%,-50%) scale(1.6);opacity:0}}
+
+  .mi-tip{background:rgba(0,20,25,.95)!important;color:#fff!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:10px!important;box-shadow:0 8px 24px rgba(0,0,0,.55)!important;font-size:12px;line-height:1.5;padding:8px 11px!important}
+  .mi-tip b{font-weight:600}
+  .leaflet-tooltip.mi-tip:before{border-top-color:rgba(0,20,25,.95)!important}
+
+  /* ---- summary card ---- */
+  #card{position:absolute;left:22px;bottom:22px;z-index:600;width:296px;border-radius:16px;background:rgba(0,20,25,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 12px 34px rgba(0,0,0,.5);padding:18px;display:none;color:#fff}
+  #card.on{display:block}
+  #card .top{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+  #card .kind{font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgb(160,162,166)}
+  #card h3{margin:3px 0 0;font-size:16px;font-weight:500;line-height:20px}
+  #card .addr{font-size:12px;line-height:17px;color:rgb(160,162,166);margin-bottom:10px}
+  #card .sum{font-size:13px;line-height:19px;color:#fff;white-space:pre-line;margin-bottom:14px}
+  #card button{width:100%;border:0;border-radius:10px;background:#fff;color:rgb(1,28,34);font-family:inherit;font-size:13px;font-weight:500;padding:11px;cursor:pointer}
+  #card .x{margin-left:auto;border:0;background:rgba(255,255,255,.08);color:#fff;width:26px;height:26px;border-radius:50%;font-size:15px;line-height:1;cursor:pointer;flex:none;padding:0}
+  #card .sw{width:12px;height:12px;border-radius:3px;flex:none;margin-top:4px}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div id="card">
+  <div class="top">
+    <span class="sw" id="c-sw"></span>
+    <span style="min-width:0">
+      <span class="kind" id="c-kind"></span>
+      <h3 id="c-name"></h3>
+    </span>
+    <button class="x" id="c-x" title="Close">×</button>
+  </div>
+  <div class="addr" id="c-addr"></div>
+  <div class="sum" id="c-sum"></div>
+  <button id="c-open">Open full profile</button>
+</div>
+<script>
+// Traffic-light compliance status, identical across every layer.
+const STATUS_COLOR = { attention:'#ff2f2f', watch:'#ff9900', ok:'#37d13a' };
+const colorFor = (r) => STATUS_COLOR[r.status] || '#37d13a';
+const KIND_LABEL = { branch:'Branch', broker:'Broker', client:'Client', lender:'Lender' };
+
+const map = L.map('map', { zoomControl:false, attributionControl:true, minZoom:3, maxZoom:17, zoomSnap:0.25 });
+L.control.zoom({ position:'topleft' }).addTo(map);
+
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  maxZoom:17, attribution:'Imagery &copy; Esri, Maxar, Earthstar Geographics'
+}).addTo(map);
+
+map.createPane('tint');
+map.getPane('tint').classList.add('leaflet-tint-pane');
+map.getPane('tint').style.zIndex = 350;
+
+map.createPane('labels');
+map.getPane('labels').style.zIndex = 400;
+map.getPane('labels').style.pointerEvents = 'none';
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', {
+  subdomains:'abcd', maxZoom:19, pane:'labels', attribution:'&copy; OpenStreetMap &copy; CARTO'
+}).addTo(map);
+
+// one Leaflet layer group per record type, toggled independently
+const groups = { lenders:L.layerGroup(), branches:L.layerGroup(), brokers:L.layerGroup(), clients:L.layerGroup() };
+const KEY_OF = { branch:'branches', broker:'brokers', client:'clients', lender:'lenders' };
+let DATA = { branches:[], brokers:[], clients:[], lenders:[] };
+let SHOWN = { lenders:false, branches:true, brokers:false, clients:false };
+let panelReserve = 476;
+
+const card = document.getElementById('card');
+let cardRec = null;
+function showCard(r){
+  cardRec = r;
+  document.getElementById('c-kind').textContent = KIND_LABEL[r.kind];
+  document.getElementById('c-name').textContent = r.name;
+  document.getElementById('c-addr').textContent = r.address || '';
+  document.getElementById('c-sum').textContent = r.summary || '';
+  document.getElementById('c-sw').style.background = colorFor(r);
+  card.classList.add('on');
+}
+document.getElementById('c-x').onclick = () => { card.classList.remove('on'); cardRec = null; };
+document.getElementById('c-open').onclick = () => {
+  if (!cardRec) return;
+  parent.postMessage({ type:'marker-open', kind:cardRec.kind, id:cardRec.id, key:cardRec.key, name:cardRec.name }, '*');
+  card.classList.remove('on');
+};
+
+function buildMarkers(){
+  Object.values(groups).forEach(g => g.clearLayers());
+  Object.entries(DATA).forEach(([layerKey, recs]) => {
+    recs.forEach(r => {
+      if (r.lat == null || r.lon == null) return;
+      const c = colorFor(r);
+      const html = `<div class="mk ${r.kind}">
+        <i class="halo" style="background:${c}"></i>
+        <i class="mid" style="background:${c}"></i>
+        <i class="core" style="background:${c}"></i></div>`;
+      const m = L.marker([r.lat, r.lon], {
+        icon: L.divIcon({ className:'', html, iconSize:[0,0], iconAnchor:[0,0] }),
+        zIndexOffset: r.kind === 'branch' ? 300 : r.kind === 'lender' ? 200 : 100,
+      });
+      const SW = { attention:'Requires review', watch:'Potential gap', ok:'Evidence found' };
+      m.bindTooltip(`<b>${r.name}</b><br>${KIND_LABEL[r.kind]} · <span style="color:${c}">${SW[r.status] || ''}</span>`, { className:'mi-tip', direction:'top', offset:[0,-12], opacity:1 });
+      m.on('click', () => showCard(r));
+      m.addTo(groups[layerKey]);
+    });
+  });
+  syncLayers();
+}
+
+function syncLayers(){
+  Object.entries(groups).forEach(([k, g]) => {
+    const on = !!SHOWN[k];
+    if (on && !map.hasLayer(g)) g.addTo(map);
+    if (!on && map.hasLayer(g)) map.removeLayer(g);
+  });
+}
+
+function visiblePoints(){
+  const pts = [];
+  Object.entries(DATA).forEach(([k, recs]) => {
+    if (!SHOWN[k]) return;
+    recs.forEach(r => { if (r.lat != null && r.lon != null) pts.push([r.lat, r.lon]); });
+  });
+  return pts;
+}
+
+function fitToMarkers(){
+  const pts = visiblePoints();
+  if (!pts.length) { map.setView([-27.5, 150.5], 5); return; }
+  if (pts.length === 1) { map.setView(pts[0], 11); return; }
+  map.fitBounds(L.latLngBounds(pts), {
+    paddingTopLeft: [90, 80],
+    paddingBottomRight: [panelReserve + 60, 120],
+    animate: false, maxZoom: 11,
+  });
+}
+
+window.addEventListener('message', (e) => {
+  const d = e.data; if (!d) return;
+  if (d.type === 'set-layers') {
+    if (d.data) DATA = d.data;
+    if (d.layers) SHOWN = d.layers;
+    card.classList.remove('on'); cardRec = null;
+    buildMarkers();
+    fitToMarkers();
+    return;
+  }
+  if (d.type === 'refit') {
+    if (typeof d.panelWidth === 'number') panelReserve = d.panelWidth;
+    map.invalidateSize();
+    fitToMarkers();
+  }
+});
+
+map.whenReady(() => { buildMarkers(); fitToMarkers(); });
+window.addEventListener('resize', fitToMarkers);
+parent.postMessage({ type:'map-ready' }, '*');
+</script>
+</body>
+</html>

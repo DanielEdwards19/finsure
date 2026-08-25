@@ -1,0 +1,18 @@
+file_name,source_system,application_reference,client,prototype_only
+00_READ_ME_FIRST.txt,Prototype package,FIN-DEMO-0002,Julie Smith,Yes
+01_Infynity_Client_Record.json,Infynity,FIN-DEMO-0002,Julie Smith,Yes
+02_Infynity_Application_Export.csv,Infynity,FIN-DEMO-0002,Julie Smith,Yes
+03_Needs_and_Objectives_Assessment.docx,Broker file / SharePoint,FIN-DEMO-0002,Julie Smith,Yes
+04_Broker_File_Notes.docx,Broker file / SharePoint,FIN-DEMO-0002,Julie Smith,Yes
+05_Employment_Verification_Record.docx,Broker file / SharePoint,FIN-DEMO-0002,Julie Smith,Yes
+06_Preliminary_Assessment.pdf,Broker file / SharePoint,FIN-DEMO-0002,Julie Smith,Yes
+07_Credit_Proposal_and_Product_Comparison.pdf,Broker file / SharePoint,FIN-DEMO-0002,Julie Smith,Yes
+08_Westpac_Conditional_Approval_PROTOTYPE.pdf,Lender portal simulation,FIN-DEMO-0002,Julie Smith,Yes
+09_Building_Insurance_Certificate_PROTOTYPE.pdf,Manual upload,FIN-DEMO-0002,Julie Smith,Yes
+10_Julie_Smith_NAB_Offset_Statement_PROTOTYPE.pdf,Manual upload,FIN-DEMO-0002,Julie Smith,Yes
+11_Source_of_Funds_Declaration_UNSIGNED.pdf,Broker file / SharePoint,FIN-DEMO-0002,Julie Smith,Yes
+12_Contract_of_Sale_Extract_PROTOTYPE.pdf,Manual upload,FIN-DEMO-0002,Julie Smith,Yes
+13_Identification_Checklist.docx,Broker file / SharePoint,FIN-DEMO-0002,Julie Smith,Yes
+14_Disclosure_and_Consent_Record_PROTOTYPE.pdf,Broker file / SharePoint,FIN-DEMO-0002,Julie Smith,Yes
+15_Julie_Smith_Email_Thread_Extract.txt,Outlook,FIN-DEMO-0002,Julie Smith,Yes
+16_Expected_Prototype_Findings.txt,Prototype logic,FIN-DEMO-0002,Julie Smith,Yes

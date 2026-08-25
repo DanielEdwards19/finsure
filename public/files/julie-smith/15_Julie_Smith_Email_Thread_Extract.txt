@@ -1,0 +1,115 @@
+FICTIONAL PROTOTYPE DATA - NOT A REAL CUSTOMER OR CREDIT APPLICATION
+
+THREAD 002
+Application reference: FIN-DEMO-0002
+Client: Julie Smith
+Broker: Rachel Nguyen
+Branch: Brisbane South
+Application: Owner-occupied purchase — $625,000 — Westpac
+======================================================================
+
+From: Julie Smith <julie.smith@client-demo.example>
+To: Rachel Nguyen <rachel.nguyen@finsure-demo.example>
+Date: 3 June 2026, 8:12 AM AEST
+Subject: Cooling-off period for our property purchase
+
+Hi Rachel,
+
+I’m looking for some clarification on the cooling-off period for the property
+we’re purchasing.
+
+Could you please confirm how long it is, when it starts and the exact date and
+time it ends? I’d also like to understand whether there are any costs or
+penalties if we decide not to proceed during that period, and whether anything
+in the contract affects our usual cooling-off rights.
+
+Thanks,
+Julie
+
+---
+
+From: Rachel Nguyen <rachel.nguyen@finsure-demo.example>
+To: Julie Smith <julie.smith@client-demo.example>
+Date: 3 June 2026, 9:03 AM AEST
+Subject: Re: Cooling-off period for our property purchase
+
+Hi Julie,
+
+The contract terms and cooling-off rights need to be confirmed by your
+conveyancer or solicitor, as they can vary depending on the contract and how
+the property was purchased. I don’t want to give you a date that may be
+incorrect.
+
+Please contact Priya at Coastline Conveyancing today and ask her to confirm in
+writing:
+
+- whether a cooling-off period applies;
+- the exact date and time it expires;
+- any termination penalty or other consequence; and
+- whether the contract includes a waiver or altered condition.
+
+From the finance side, your approval is still conditional on the updated
+building insurance certificate and verification of the funds to complete.
+Those finance conditions are separate from your rights under the sale contract.
+
+I’ve copied Priya with your permission from our call this morning.
+
+Regards,
+Rachel
+
+---
+
+From: Priya Desai <priya.desai@conveyancer-demo.example>
+To: Julie Smith <julie.smith@client-demo.example>
+Cc: Rachel Nguyen <rachel.nguyen@finsure-demo.example>
+Date: 3 June 2026, 10:18 AM AEST
+Subject: Re: Cooling-off period for our property purchase
+
+Hi Julie,
+
+I’ll review the signed contract and send you written advice this afternoon.
+Please don’t rely on the standard timeframe until I have checked the special
+conditions and execution date.
+
+Regards,
+Priya
+
+---
+
+From: Julie Smith <julie.smith@client-demo.example>
+To: Rachel Nguyen <rachel.nguyen@finsure-demo.example>
+Date: 4 June 2026, 4:37 PM AEST
+Subject: Westpac conditions
+
+Hi Rachel,
+
+Priya has confirmed the contract position. I’ve attached the insurance
+certificate. The $82,000 for settlement is in my offset account with NAB and
+I’ve attached the statement showing it.
+
+Is that everything Westpac needs?
+
+Attachments:
+- Building_Insurance_Certificate.pdf
+- Julie_Smith_NAB_Offset_Statement.pdf
+
+---
+
+From: Rachel Nguyen <rachel.nguyen@finsure-demo.example>
+To: Julie Smith <julie.smith@client-demo.example>
+Date: 5 June 2026, 9:26 AM AEST
+Subject: Re: Westpac conditions
+
+Thanks, Julie. I’ve received both documents and sent them to Westpac through
+the secure broker portal. Please don’t email any further unredacted statements
+unless I specifically ask for them.
+
+The insurer’s certificate is acceptable. Westpac has asked one follow-up
+question about a $25,000 credit into the offset account on 28 May. Could you
+please provide evidence of the source? If it was a gift, we’ll need to record
+that accurately and check whether the lender requires a gift declaration.
+
+Regards,
+Rachel
+
+======================================================================

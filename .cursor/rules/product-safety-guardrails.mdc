@@ -1,0 +1,34 @@
+---
+description: Non-negotiable product-safety rules for Mortgage Intelligence copy, findings and lender results
+alwaysApply: true
+---
+
+# Product-safety guardrails
+
+These are compliance requirements, not style preferences. Full detail in
+`docs/DESIGN.md` §2. Violating one is a product defect.
+
+- **Never state that a file is compliant or non-compliant.** Report evidence
+  found, potential gaps, and items requiring review. Human assessment is always
+  required and must be stated on screen.
+- **No legal or credit advice.** Never state that an application is approved,
+  will be approved, or is "guaranteed suitable".
+- **No superlatives in lender results.** Use only the `LenderResult` union in
+  `lib/domain/types.ts`. Never "best", "cheapest" or "recommended lender".
+- **Absence of a document is never proof of absence of a fact.** Missing files
+  produce "Information required" or "Requires review", never a negative finding.
+- **Every simulated figure is labelled.** Rates, repayments, DSCR and calculator
+  output carry an indicative-simulation label.
+- **Every derived value carries its source.** Use the `Sourced<T>` wrapper — the
+  type makes a value unrenderable without one of the four permitted sources.
+- **Australian English.** Dates as `4 August 2026`, currency as `$2,420,000`.
+- **Copy voice** is matter-of-fact: what is known, its source, what remains
+  outstanding. No reassurance, no marketing language, no emoji.
+
+```ts
+// ❌ BAD — invented result language, unsourced figure
+{ result: "Best option", rate: 6.24 }
+
+// ✅ GOOD
+{ result: "Proposed option", rate: sourced(6.24, "System calculation — indicative") }
+```
