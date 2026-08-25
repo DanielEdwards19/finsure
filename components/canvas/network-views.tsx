@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { severityOfStatus } from "@/lib/data/network";
 import { severityResolverFor } from "@/lib/domain/compliance";
 import {
@@ -17,6 +19,8 @@ import type { Tone } from "@/lib/design/tokens";
 import { LenderMark } from "../lender-mark";
 import { Card, CanvasTitle, Caveat, Field, Grid, Pill, Section } from "./ui";
 
+const NETWORK_NAME = "Finsure";
+
 const TONE_OF: Record<Severity, Tone> = {
   attention: "bad",
   watch: "warn",
@@ -29,6 +33,16 @@ const SEVERITY_LABEL: Record<Severity, string> = {
   watch: "Potential gap",
   ok: "Evidence found",
 };
+
+/** Short status words on the network table. Never "compliant". */
+const TABLE_STATUS: Record<Severity, string> = {
+  attention: "Attention",
+  watch: "Watch",
+  ok: "Evidence found",
+};
+
+const BRANCH_COLUMNS =
+  "grid-cols-[minmax(0,1.7fr)_minmax(0,1.3fr)_minmax(0,1.1fr)_minmax(0,0.55fr)_minmax(0,0.6fr)_minmax(0,0.6fr)_minmax(0,0.8fr)]";
 
 const HUMAN_REVIEW =
   "Figures are counted from the records available to you and require human review. No compliance determination is made.";
@@ -51,6 +65,16 @@ function Stat({
       <span className="text-[26px] leading-none font-medium">{value}</span>
       {sub && <span className="text-xs font-medium text-secondary">{sub}</span>}
     </Card>
+  );
+}
+
+/** Snapshot KPI: large figure first, label beneath. */
+function SnapshotStat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="rounded-2xl bg-surface px-[18px] py-[18px] shadow-[inset_0_0_0_1px_var(--color-hairline)]">
+      <div className="text-[28px] leading-none font-medium">{value}</div>
+      <div className="mt-1 text-xs text-secondary">{label}</div>
+    </div>
   );
 }
 
@@ -99,79 +123,132 @@ function ApplicationList({
 
 export function NetworkReportView({
   scope,
+  lender,
   onOpen,
 }: {
   scope: DataScope;
+  lender?: string;
   onOpen: (view: CanvasView) => void;
 }) {
-  const totals = networkTotals(scope);
-  const branches = branchRollup(scope)
-    .slice()
+  const options = lender ? { lender } : {};
+  const totals = networkTotals(scope, options);
+  const branches = branchRollup(scope, options)
+    .filter((rollup) => (lender ? rollup.applications > 0 : true))
     .sort((a, b) => b.attention - a.attention);
+  const [exported, setExported] = useState(false);
+  const title = lender ?? NETWORK_NAME;
+  const exportName = lender
+    ? `${lender.replace(/\s+/g, "_")}_Network_Snapshot.pdf`
+    : "Finsure_Network_Compliance_Snapshot.pdf";
 
   return (
-    <div className="flex w-full animate-rise flex-col gap-6">
-      <CanvasTitle title="Network position">
-        <Pill>{scope.identity.scopeLabel}</Pill>
-      </CanvasTitle>
+    <div className="flex w-full animate-rise flex-col">
+      <div className="mb-[18px] flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="text-[11px] leading-none font-semibold tracking-[0.1em] text-secondary uppercase">
+            Network compliance snapshot
+          </div>
+          <h1 className="mt-1.5 mb-0 flex items-center gap-3 text-[26px] leading-none font-medium">
+            {lender && <LenderMark name={lender} size={32} />}
+            {title}
+          </h1>
+        </div>
+        <button
+          type="button"
+          onClick={() => setExported(true)}
+          className="cursor-pointer rounded-[10px] border-0 bg-white px-[18px] py-[11px] text-[13px] font-semibold text-inset"
+        >
+          ↓ Download PDF
+        </button>
+      </div>
 
-      <Section label="Position">
-        <Grid min={170}>
-          <Stat
-            label="Branches"
-            value={String(totals.branches)}
-            sub={`${totals.branchesNeedingAttention} requiring attention`}
-          />
-          <Stat label="Brokers" value={String(totals.brokers)} />
-          <Stat
-            label="Applications"
-            value={String(totals.applications)}
-            sub={`${shortMoney(totals.value)} total`}
-          />
-          <Stat
-            label="Requiring attention"
-            value={String(totals.attention)}
-            sub="human review required"
-          />
-          <Stat
-            label="Evidence coverage"
-            value={totals.coverage == null ? "—" : `${totals.coverage}%`}
-            sub="indicative average"
-          />
-        </Grid>
-      </Section>
+      {exported && (
+        <div className="mb-[18px] rounded-xl border border-[rgb(55_209_58_/_0.3)] bg-[rgb(55_209_58_/_0.12)] px-4 py-3 text-[12.5px] font-medium text-[rgb(74,211,77)]">
+          Exported — {exportName} (simulated)
+        </div>
+      )}
 
-      <Section label="Branches" meta={`${branches.length} in scope`}>
-        <Grid min={300}>
+      <div
+        className="mb-[22px] grid items-start gap-3.5"
+        style={{
+          gridTemplateColumns: "repeat(auto-fit,minmax(170px,1fr))",
+        }}
+      >
+        <SnapshotStat
+          value={totals.coverage == null ? "—" : `${totals.coverage}%`}
+          label="Evidence coverage"
+        />
+        <SnapshotStat
+          value={String(totals.attention)}
+          label="Requiring attention"
+        />
+        <SnapshotStat value={String(totals.watch)} label="Under watch" />
+        <SnapshotStat
+          value={String(totals.branchesNeedingAttention)}
+          label="Branches need attention"
+        />
+      </div>
+
+      <div className="mb-5 overflow-x-auto rounded-2xl bg-surface shadow-[inset_0_0_0_1px_var(--color-hairline)]">
+        <div
+          className={`grid min-w-[560px] ${BRANCH_COLUMNS} items-center gap-x-2.5 text-[12.5px]`}
+        >
+          {(
+            [
+              "Branch",
+              "Broker",
+              "Status",
+              "Files",
+              "Review",
+              "Alerts",
+              "Coverage",
+            ] as const
+          ).map((heading, index) => (
+            <span
+              key={heading}
+              className={`border-b border-hairline py-3 text-[11px] font-semibold tracking-[0.03em] text-secondary uppercase ${
+                index === 0 ? "pl-[18px]" : index === 6 ? "pr-[18px]" : ""
+              }`}
+            >
+              {heading}
+            </span>
+          ))}
+
           {branches.map((rollup) => (
             <button
               key={rollup.branch.id}
               type="button"
               onClick={() => onOpen({ kind: "branch", id: rollup.branch.id })}
-              className="flex min-w-0 cursor-pointer flex-col gap-2.5 rounded-2xl bg-surface p-6 pr-[25px] text-left shadow-[inset_0_0_0_1px_var(--color-hairline)] hover:bg-white/5"
+              className={`col-span-full grid ${BRANCH_COLUMNS} cursor-pointer items-center gap-x-2.5 border-0 border-b border-hairline/60 bg-transparent py-3 text-left text-[12.5px] last:border-b-0 hover:bg-white/5`}
             >
-              <span className="flex flex-wrap items-center gap-2">
-                <span className="text-base leading-[19px] font-medium">
-                  Finsure {rollup.branch.name}
-                </span>
+              <span className="truncate pl-[18px] font-medium">
+                {rollup.branch.name}, {rollup.branch.state}
+              </span>
+              <span className="truncate text-[#d4d6da]">
+                {rollup.brokers} {rollup.brokers === 1 ? "broker" : "brokers"}
+              </span>
+              <span className="min-w-0">
                 <Pill tone={TONE_OF[rollup.severity]}>
-                  {SEVERITY_LABEL[rollup.severity]}
+                  {TABLE_STATUS[rollup.severity]}
                 </Pill>
               </span>
-              <span className="text-secondary-sm text-secondary">
-                {rollup.branch.state} · {rollup.brokers} brokers ·{" "}
-                {rollup.applications} applications
-              </span>
-              <span className="text-secondary-sm text-secondary">
-                {rollup.attention} requiring attention · {rollup.coverage}%
-                coverage · {shortMoney(rollup.value)}
+              <span className="text-[#d4d6da]">{rollup.applications}</span>
+              <span className="text-[#d4d6da]">{rollup.attention}</span>
+              <span className="text-[#d4d6da]">{rollup.watch}</span>
+              <span className="pr-[18px] text-[#d4d6da]">
+                {rollup.coverage}%
               </span>
             </button>
           ))}
-        </Grid>
-      </Section>
+        </div>
+      </div>
 
-      <Caveat>{HUMAN_REVIEW}</Caveat>
+      <Caveat>
+        Compiled from Infynity, Microsoft 365, Outlook and SharePoint
+        {lender ? ` for ${lender}` : ""} across {totals.brokers} brokers.
+        Figures reflect evidence located across systems. No compliance
+        determination is made. Human review required.
+      </Caveat>
     </div>
   );
 }

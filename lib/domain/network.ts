@@ -39,7 +39,15 @@ export type SeverityResolver = (application: Application) => Severity;
 
 export interface AnalysisOptions {
   readonly severityOf?: SeverityResolver;
+  /** Restrict roll-ups to applications written with this lender. */
+  readonly lender?: string;
 }
+
+const forLender = (
+  applications: readonly Application[],
+  lender?: string,
+): readonly Application[] =>
+  lender ? applications.filter((a) => a.lender === lender) : applications;
 
 // ---------------------------------------------------------------------------
 // Lookups within a scope
@@ -95,10 +103,16 @@ export interface BranchRollup {
 
 export function branchRollup(
   scope: DataScope,
-  { severityOf = severityResolverFor(scope) }: AnalysisOptions = {},
+  {
+    severityOf = severityResolverFor(scope),
+    lender,
+  }: AnalysisOptions = {},
 ): readonly BranchRollup[] {
   return scope.branches.map((branch) => {
-    const applications = applicationsForBranch(scope, branch.id);
+    const applications = forLender(
+      applicationsForBranch(scope, branch.id),
+      lender,
+    );
     const severities = applications.map(severityOf);
     const attention = severities.filter((s) => s === "attention").length;
     const watch = severities.filter((s) => s === "watch").length;
@@ -106,7 +120,9 @@ export function branchRollup(
     return {
       branch,
       applications: applications.length,
-      brokers: brokersForBranch(scope, branch.id).length,
+      brokers: lender
+        ? new Set(applications.map((a) => a.brokerId)).size
+        : brokersForBranch(scope, branch.id).length,
       attention,
       watch,
       value: applications.reduce((total, a) => total + a.amount, 0),
@@ -138,20 +154,28 @@ export interface NetworkTotals {
 
 export function networkTotals(
   scope: DataScope,
-  { severityOf = severityResolverFor(scope) }: AnalysisOptions = {},
+  {
+    severityOf = severityResolverFor(scope),
+    lender,
+  }: AnalysisOptions = {},
 ): NetworkTotals {
-  const rollup = branchRollup(scope, { severityOf });
-  const severities = scope.applications.map(severityOf);
-  const value = scope.applications.reduce((total, a) => total + a.amount, 0);
+  const rollup = branchRollup(scope, { severityOf, lender }).filter((b) =>
+    lender ? b.applications > 0 : true,
+  );
+  const applications = forLender(scope.applications, lender);
+  const severities = applications.map(severityOf);
+  const value = applications.reduce((total, a) => total + a.amount, 0);
 
   return {
-    brokers: scope.brokers.length,
-    branches: scope.branches.length,
-    applications: scope.applications.length,
+    brokers: lender
+      ? new Set(applications.map((a) => a.brokerId)).size
+      : scope.brokers.length,
+    branches: lender ? rollup.length : scope.branches.length,
+    applications: applications.length,
     attention: severities.filter((s) => s === "attention").length,
     watch: severities.filter((s) => s === "watch").length,
     value,
-    averageValue: Math.round(value / (scope.applications.length || 1)),
+    averageValue: Math.round(value / (applications.length || 1)),
     coverage: rollup.length
       ? Math.round(
           rollup.reduce((total, b) => total + b.coverage, 0) / rollup.length,

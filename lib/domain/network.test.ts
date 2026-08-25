@@ -78,6 +78,18 @@ describe("network totals", () => {
     expect(scoped.applications).toBeLessThan(totals.applications);
     expect(scoped.value).toBeLessThan(totals.value);
   });
+
+  it("narrows to a named lender", () => {
+    const lender = organisation.lenderNames[0];
+    const withLender = organisation.applications.filter(
+      (a) => a.lender === lender,
+    );
+    const scoped = networkTotals(organisation, { lender });
+
+    expect(scoped.applications).toBe(withLender.length);
+    expect(scoped.applications).toBeLessThan(totals.applications);
+    expect(scoped.branches).toBeLessThanOrEqual(totals.branches);
+  });
 });
 
 describe("branch roll-up", () => {

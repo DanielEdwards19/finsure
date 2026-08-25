@@ -171,9 +171,9 @@ describe("ask", () => {
     });
 
     it("still answers a question that genuinely names a lender", () => {
-      expect(
-        ask(organisation, "How many applications are with ING?").intro,
-      ).toContain("ING");
+      const answer = ask(organisation, "How many applications are with ING?");
+      expect(answer.intro).toContain("ING");
+      expect(answer.view).toEqual({ kind: "networkReport", lender: "ING" });
     });
 
     it("does not read a client name out of an unrelated word", () => {

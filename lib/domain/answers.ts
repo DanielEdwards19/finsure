@@ -54,7 +54,7 @@ import type {
  */
 export type CanvasView =
   | { readonly kind: "map" }
-  | { readonly kind: "networkReport" }
+  | { readonly kind: "networkReport"; readonly lender?: string }
   | { readonly kind: "branch"; readonly id: BranchId }
   | { readonly kind: "broker"; readonly id: BrokerId }
   | { readonly kind: "application"; readonly id: ApplicationId }
@@ -335,7 +335,7 @@ export function lenderAnswer(scope: DataScope, lender: string): Answer {
       },
     ],
     outro: "",
-    view: { kind: "networkReport" },
+    view: { kind: "networkReport", lender },
   };
 }
 

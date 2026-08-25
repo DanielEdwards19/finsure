@@ -22,7 +22,7 @@ export function crumbLabel(view: CanvasView, scope: DataScope): string {
     case "compliance":
       return "Compliance review";
     case "networkReport":
-      return "Network snapshot";
+      return view.lender ?? "Network snapshot";
     case "findingGroup":
       if (view.group === "severity") {
         const label =

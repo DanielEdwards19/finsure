@@ -29,7 +29,13 @@ export function Canvas({
       return null;
 
     case "networkReport":
-      return <NetworkReportView scope={scope} onOpen={onOpen} />;
+      return (
+        <NetworkReportView
+          scope={scope}
+          lender={view.lender}
+          onOpen={onOpen}
+        />
+      );
 
     case "compliance":
       return <ComplianceView scope={scope} onOpen={onOpen} />;
@@ -106,7 +112,7 @@ export function canvasTitle(view: CanvasView): string {
     case "map":
       return "Map";
     case "networkReport":
-      return "Network position";
+      return view.lender ?? "Network position";
     case "compliance":
       return "Evidence review";
     case "findingGroup":
